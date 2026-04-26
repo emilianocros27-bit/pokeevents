@@ -150,8 +150,17 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   .card-anim{animation:fadeIn .4s ease both}
 
-  .refresh-btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted);padding:6px 14px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.76rem;cursor:pointer;transition:all .2s;margin-left:auto;display:block;margin-bottom:10px}
+  .top-bar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:10px}
+  .refresh-btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted);padding:6px 14px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.76rem;cursor:pointer;transition:all .2s}
   .refresh-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+  .search-icon-btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted);width:34px;height:34px;border-radius:8px;font-size:.95rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+  .search-icon-btn:hover,.search-icon-btn.active{border-color:var(--yellow);color:var(--yellow)}
+  .search-bar{background:var(--card);border:2px solid rgba(255,214,10,.3);border-radius:12px;padding:10px 14px;display:none;margin-bottom:16px;animation:fadeIn .2s ease}
+  .search-bar.visible{display:flex;align-items:center;gap:10px}
+  .search-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600}
+  .search-bar input::placeholder{color:var(--muted)}
+  .search-clear{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:0 4px}
+  .no-results{text-align:center;color:var(--muted);font-size:.85rem;padding:20px}
 
   footer{text-align:center;padding:22px;color:var(--muted);font-size:.7rem;border-top:1px solid rgba(255,255,255,.05);margin-top:14px}
 
@@ -194,7 +203,15 @@
 
 
   <div class="section-title">⭐ Incursiones Activas Ahora</div>
-  <button class="refresh-btn" onclick="loadRaids()">🔄 Actualizar</button>
+  <div class="top-bar">
+    <button class="search-icon-btn" id="search-toggle-btn" onclick="toggleSearch()" title="Buscar">🔍</button>
+    <button class="refresh-btn" onclick="loadRaids()">🔄 Actualizar</button>
+  </div>
+  <div class="search-bar" id="search-bar">
+    <span style="color:var(--muted);font-size:.9rem">🔍</span>
+    <input type="text" id="search-input" placeholder="Buscar Pokémon, evento, tipo..." oninput="doSearch(this.value)" autofocus>
+    <button class="search-clear" onclick="clearSearch()">✕</button>
+  </div>
   <div class="raids-grid" id="raids-grid"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
 
   <div class="section-title">🔜 Próximas Incursiones — Mayo 2026</div>
@@ -334,6 +351,36 @@ const headerPokes = [
   {name:"Regirock",id:377,label:"MAX BATTLE"},
 ];
 
+let searchQuery = '';
+
+function toggleSearch() {
+  const bar = document.getElementById('search-bar');
+  const btn = document.getElementById('search-toggle-btn');
+  const visible = bar.classList.toggle('visible');
+  btn.classList.toggle('active', visible);
+  if (visible) document.getElementById('search-input').focus();
+  else clearSearch();
+}
+
+function clearSearch() {
+  searchQuery = '';
+  document.getElementById('search-input').value = '';
+  loadRaids();
+  loadUpcoming();
+  loadEvents();
+}
+
+function doSearch(q) {
+  searchQuery = q.toLowerCase().trim();
+  loadRaids();
+  loadUpcoming();
+  loadEvents();
+}
+
+function matchesQuery(str) {
+  return !searchQuery || str.toLowerCase().includes(searchQuery);
+}
+
 function getNowInTz(tz) {
   const now = new Date();
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -387,11 +434,14 @@ function loadRaids() {
   const grid = document.getElementById('raids-grid');
   grid.innerHTML = '';
   const nowLocal = getNowInTz(selectedTz);
+  let shown = 0;
   raids.forEach((r,i) => {
     const startDate  = new Date(...r.start);
     const endDate    = new Date(...r.end);
     const hideDate   = r.hideAt ? new Date(...r.hideAt) : null;
     if (hideDate && nowLocal >= hideDate) return;
+    if (!matchesQuery(r.name) && !r.types.some(t => matchesQuery(t))) return;
+    shown++;
     const totalMs   = endDate - startDate;
     const remainMs  = endDate - nowLocal;
     const pct       = Math.max(0, Math.min(100, (remainMs / totalMs) * 100));
@@ -427,20 +477,26 @@ function loadRaids() {
       </div>`;
     grid.appendChild(el);
   });
+  if (shown === 0) grid.innerHTML = '<div class="no-results">Sin resultados</div>';
 }
 
 function loadUpcoming() {
-  document.getElementById('upcoming-grid').innerHTML = upcoming.map((u,i) => `
+  const filtered = upcoming.filter(u => matchesQuery(u.name));
+  document.getElementById('upcoming-grid').innerHTML = filtered.length
+    ? filtered.map((u,i) => `
     <div class="upcoming-card card-anim" style="animation-delay:${i*.07}s">
       ${pImg(u.id, u.name)}
       <div class="up-name">${u.name}</div>
       <div class="up-dates">📅 ${u.dates}</div>
       ${u.region?`<div class="up-region">${u.region}</div>`:''}
-    </div>`).join('');
+    </div>`).join('')
+    : '<div class="no-results">Sin resultados</div>';
 }
 
 function loadEvents() {
-  document.getElementById('events-list').innerHTML = events.map((ev,i) => `
+  const filtered = events.filter(ev => matchesQuery(ev.title) || matchesQuery(ev.tag));
+  document.getElementById('events-list').innerHTML = filtered.length
+    ? filtered.map((ev,i) => `
     <div class="event-item ${ev.type} card-anim" style="animation-delay:${i*.07}s">
       <div class="event-date">
         <div class="event-day">${ev.day}</div>
@@ -454,7 +510,8 @@ function loadEvents() {
         <div class="event-desc">${ev.desc}</div>
       </div>
       ${ev.pokemon.length?`<div class="event-pokemon-imgs">${ev.pokemon.slice(0,4).map(id=>pImg(id,'')).join('')}</div>`:''}
-    </div>`).join('');
+    </div>`).join('')
+    : '<div class="no-results">Sin resultados</div>';
 }
 
 function loadMax() {
