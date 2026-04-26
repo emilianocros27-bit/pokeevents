@@ -150,6 +150,16 @@
   .refresh-btn:hover{border-color:var(--yellow);color:var(--yellow)}
 
   footer{text-align:center;padding:22px;color:var(--muted);font-size:.7rem;border-top:1px solid rgba(255,255,255,.05);margin-top:14px}
+
+  .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;position:relative}
+  .tz-wrapper{position:relative}
+  .tz-btn{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);color:white;border-radius:20px;padding:4px 10px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap}
+  .tz-btn:hover{background:rgba(0,0,0,.5)}
+  .tz-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#1a1a35;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:6px;z-index:200;min-width:200px;display:none;max-height:280px;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+  .tz-dropdown.open{display:block;animation:fadeIn .15s ease}
+  .tz-option{display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text);padding:7px 12px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.78rem;cursor:pointer}
+  .tz-option:hover{background:rgba(255,255,255,.08)}
+  .tz-option.active{background:rgba(255,214,10,.15);color:var(--yellow);font-weight:700}
 </style>
 </head>
 <body>
@@ -164,7 +174,13 @@
       <circle cx="50" cy="50" r="7" fill="white"/>
     </svg>
     <h1>POKEEVENTS GO</h1>
-    <div class="update-badge" id="last-update">--:--</div>
+    <div class="header-right">
+      <div class="tz-wrapper">
+        <button class="tz-btn" onclick="toggleTzDropdown()">🌍 <span id="tz-label">México</span> ▾</button>
+        <div class="tz-dropdown" id="tz-dropdown"></div>
+      </div>
+      <div class="update-badge" id="last-update">--:--</div>
+    </div>
   </div>
   <div class="header-pokemon" id="header-pokemon"></div>
 </header>
@@ -191,6 +207,57 @@
 <footer>PokeEvents GO • Imágenes via PokeAPI • No afiliado con Niantic</footer>
 
 <script>
+const timezones = [
+  { label:"🇲🇽 México (Centro)",    short:"México",     tz:"America/Mexico_City" },
+  { label:"🇲🇽 México (Pacífico)",  short:"Mex. Pac.",  tz:"America/Tijuana" },
+  { label:"🇺🇸 EE.UU. (Este)",      short:"EE.UU. ET",  tz:"America/New_York" },
+  { label:"🇺🇸 EE.UU. (Centro)",    short:"EE.UU. CT",  tz:"America/Chicago" },
+  { label:"🇺🇸 EE.UU. (Pacífico)", short:"EE.UU. PT",  tz:"America/Los_Angeles" },
+  { label:"🇨🇴 Colombia",           short:"Colombia",   tz:"America/Bogota" },
+  { label:"🇵🇪 Perú",               short:"Perú",       tz:"America/Lima" },
+  { label:"🇪🇨 Ecuador",            short:"Ecuador",    tz:"America/Guayaquil" },
+  { label:"🇻🇪 Venezuela",          short:"Venezuela",  tz:"America/Caracas" },
+  { label:"🇧🇴 Bolivia",            short:"Bolivia",    tz:"America/La_Paz" },
+  { label:"🇨🇱 Chile",              short:"Chile",      tz:"America/Santiago" },
+  { label:"🇦🇷 Argentina",          short:"Argentina",  tz:"America/Argentina/Buenos_Aires" },
+  { label:"🇺🇾 Uruguay",            short:"Uruguay",    tz:"America/Montevideo" },
+  { label:"🇧🇷 Brasil",             short:"Brasil",     tz:"America/Sao_Paulo" },
+  { label:"🇪🇸 España",             short:"España",     tz:"Europe/Madrid" },
+];
+
+let selectedTz = localStorage.getItem('pokeevents_tz') || 'America/Mexico_City';
+let selectedTzShort = localStorage.getItem('pokeevents_tz_short') || 'México';
+
+function buildTzDropdown() {
+  document.getElementById('tz-dropdown').innerHTML = timezones.map(t =>
+    `<button class="tz-option${t.tz===selectedTz?' active':''}" onclick="selectTimezone('${t.tz}','${t.short}','${t.label}')">${t.label}</button>`
+  ).join('');
+}
+
+function toggleTzDropdown() {
+  buildTzDropdown();
+  document.getElementById('tz-dropdown').classList.toggle('open');
+}
+
+function selectTimezone(tz, short, label) {
+  selectedTz = tz;
+  selectedTzShort = short;
+  localStorage.setItem('pokeevents_tz', tz);
+  localStorage.setItem('pokeevents_tz_short', short);
+  document.getElementById('tz-label').textContent = short;
+  document.getElementById('tz-dropdown').classList.remove('open');
+  updateTime();
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.tz-wrapper')) {
+    const dd = document.getElementById('tz-dropdown');
+    if (dd) dd.classList.remove('open');
+  }
+});
+
+document.getElementById('tz-label').textContent = selectedTzShort;
+
 function getImg(id) {
   // Use multiple CDN options
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
@@ -346,7 +413,7 @@ function loadMax() {
 
 function updateTime() {
   const now = new Date();
-  document.getElementById('last-update').textContent = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-update').textContent = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',timeZone:selectedTz});
 }
 
 loadHeaderPokemon();
