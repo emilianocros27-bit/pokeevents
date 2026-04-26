@@ -284,10 +284,10 @@ function pImg(id, alt, cls='') {
 }
 
 const raids = [
-  { name:"Tapu Koko", id:785, stars:"⭐⭐⭐⭐⭐", types:["electric","fairy"], bg:"bg-electric", dates:"22 abr – 28 abr", shiny:true, hot:true, progress:50, counters:[{name:"Garchomp",id:445},{name:"Excadrill",id:530},{name:"Groudon",id:383}] },
-  { name:"Latios Oscuro", id:381, stars:"⭐⭐⭐⭐⭐ 🌑", types:["dragon","psychic"], bg:"bg-dragon", dates:"Fines de semana – 5 mayo", shiny:true, hot:false, progress:70, counters:[{name:"Rayquaza",id:384},{name:"Dragonite",id:149},{name:"Togekiss",id:468}] },
-  { name:"Venusaur Gigamax", id:3, stars:"★★★★★★ GIGAMAX", types:["grass","poison"], bg:"bg-grass", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, progress:15, counters:[{name:"Moltres",id:146},{name:"Charizard",id:6},{name:"Mewtwo",id:150}] },
-  { name:"Charizard Gigamax", id:6, stars:"★★★★★★ GIGAMAX", types:["fire","flying"], bg:"bg-fire", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, progress:15, counters:[{name:"Kyogre",id:382},{name:"Raikou",id:243},{name:"Swampert",id:260}] },
+  { name:"Tapu Koko", id:785, stars:"⭐⭐⭐⭐⭐", types:["electric","fairy"], bg:"bg-electric", dates:"22 abr – 28 abr", shiny:true, hot:true, start:[2026,3,22,0,0], end:[2026,3,28,23,59], counters:[{name:"Garchomp",id:445},{name:"Excadrill",id:530},{name:"Groudon",id:383}] },
+  { name:"Latios Oscuro", id:381, stars:"⭐⭐⭐⭐⭐ 🌑", types:["dragon","psychic"], bg:"bg-dragon", dates:"Fines de semana – 5 mayo", shiny:true, hot:false, start:[2026,3,1,0,0], end:[2026,4,5,23,59], counters:[{name:"Rayquaza",id:384},{name:"Dragonite",id:149},{name:"Togekiss",id:468}] },
+  { name:"Venusaur Gigamax", id:3, stars:"★★★★★★ GIGAMAX", types:["grass","poison"], bg:"bg-grass", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,26,14,0], end:[2026,3,26,17,0], counters:[{name:"Moltres",id:146},{name:"Charizard",id:6},{name:"Mewtwo",id:150}] },
+  { name:"Charizard Gigamax", id:6, stars:"★★★★★★ GIGAMAX", types:["fire","flying"], bg:"bg-fire", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,26,14,0], end:[2026,3,26,17,0], counters:[{name:"Kyogre",id:382},{name:"Raikou",id:243},{name:"Swampert",id:260}] },
 ];
 
 const upcoming = [
@@ -330,6 +330,33 @@ const headerPokes = [
   {name:"Regirock",id:377,label:"MAX BATTLE"},
 ];
 
+function getNowInTz(tz) {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone:tz, year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+  }).formatToParts(now);
+  const g = t => parseInt(parts.find(p=>p.type===t).value);
+  return new Date(g('year'), g('month')-1, g('day'), g('hour'), g('minute'), g('second'));
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return 'TERMINADO';
+  const mins = Math.floor(ms/60000) % 60;
+  const hrs  = Math.floor(ms/3600000) % 24;
+  const days = Math.floor(ms/86400000);
+  if (days > 0) return hrs > 0 ? `${days}d ${hrs}h` : `${days}d`;
+  if (hrs > 0)  return `${hrs}h ${mins}m`;
+  return `${mins}m`;
+}
+
+function barColor(pct) {
+  if (pct > 50) return '#06d6a0';
+  if (pct > 25) return '#ffd60a';
+  if (pct > 10) return '#fb8500';
+  return '#e63946';
+}
+
 function loadHeaderPokemon() {
   document.getElementById('header-pokemon').innerHTML = headerPokes.map(p => `
     <div class="header-poke-chip">
@@ -341,7 +368,15 @@ function loadHeaderPokemon() {
 function loadRaids() {
   const grid = document.getElementById('raids-grid');
   grid.innerHTML = '';
+  const nowLocal = getNowInTz(selectedTz);
   raids.forEach((r,i) => {
+    const startDate = new Date(...r.start);
+    const endDate   = new Date(...r.end);
+    const totalMs   = endDate - startDate;
+    const remainMs  = endDate - nowLocal;
+    const pct       = Math.max(0, Math.min(100, (remainMs / totalMs) * 100));
+    const color     = barColor(pct);
+    const remainTxt = formatRemaining(remainMs);
     const el = document.createElement('div');
     el.className = `raid-card card-anim ${r.bg}`;
     el.style.animationDelay = `${i*.1}s`;
@@ -363,8 +398,8 @@ function loadRaids() {
       </div>
       <div class="countdown">
         <span style="font-size:.7rem;color:var(--muted)">Tiempo restante:</span>
-        <div class="countdown-bar"><div class="countdown-fill" style="width:${r.progress}%"></div></div>
-        <span style="font-size:.7rem;color:var(--muted)">${r.progress}%</span>
+        <div class="countdown-bar"><div class="countdown-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span style="font-size:.75rem;color:${color};font-weight:800">${remainTxt}</span>
       </div>
       <div class="counter-chips">
         <span style="font-size:.66rem;color:var(--muted);align-self:center;margin-right:4px;font-weight:700">Counters:</span>
@@ -422,7 +457,8 @@ loadUpcoming();
 loadEvents();
 loadMax();
 updateTime();
-setInterval(updateTime,60000);
+setInterval(updateTime, 60000);
+setInterval(loadRaids, 60000);
 </script>
 </body>
 </html>
