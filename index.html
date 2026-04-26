@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokeEvents GO</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #e63946;
+    --yellow: #ffd60a;
+    --dark: #0a0a1a;
+    --card: #12122a;
+    --text: #f0f0ff;
+    --muted: #8888aa;
+    --green: #06d6a0;
+    --orange: #fb8500;
+    --purple: #9b5de5;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Outfit',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 20% 20%,rgba(230,57,70,.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,119,182,.07) 0%,transparent 50%); pointer-events:none; z-index:0; }
+
+  header { background:linear-gradient(135deg,#c1121f 0%,#e63946 60%,#c1121f 100%); padding:16px 20px 12px; position:sticky; top:0; z-index:100; box-shadow:0 4px 30px rgba(230,57,70,.5); }
+  .header-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .pokeball-svg { width:42px; height:42px; flex-shrink:0; filter:drop-shadow(0 2px 8px rgba(0,0,0,.4)); }
+  header h1 { font-family:'Russo One',sans-serif; font-size:1.5rem; letter-spacing:3px; color:white; text-shadow:2px 2px 0 rgba(0,0,0,.3); flex:1; }
+  .update-badge { font-size:0.68rem; color:rgba(255,255,255,.8); font-weight:700; background:rgba(0,0,0,.25); padding:4px 10px; border-radius:20px; }
+
+  .header-pokemon { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+  .header-pokemon::-webkit-scrollbar { display:none; }
+  .header-poke-chip { display:flex; align-items:center; gap:6px; background:rgba(0,0,0,.25); border-radius:30px; padding:4px 12px 4px 4px; flex-shrink:0; border:1px solid rgba(255,255,255,.15); }
+  .header-poke-chip img { width:36px; height:36px; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.4)); }
+  .chip-name { font-size:0.72rem; font-weight:700; color:white; display:block; }
+  .chip-label { font-size:0.58rem; color:rgba(255,255,255,.6); display:block; }
+
+  .container { max-width:900px; margin:0 auto; padding:22px 16px; position:relative; z-index:1; }
+
+  .ask-bar { background:var(--card); border:2px solid rgba(255,214,10,.25); border-radius:14px; padding:12px 16px; display:flex; gap:10px; margin-bottom:24px; }
+  .ask-bar input { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:'Outfit',sans-serif; font-size:.93rem; font-weight:600; }
+  .ask-bar input::placeholder { color:var(--muted); }
+  .ask-bar button { background:var(--yellow); color:#0a0a1a; border:none; border-radius:10px; padding:10px 16px; font-family:'Russo One',sans-serif; font-size:.82rem; letter-spacing:1px; cursor:pointer; transition:transform .1s,box-shadow .2s; white-space:nowrap; }
+  .ask-bar button:hover { transform:scale(1.04); box-shadow:0 4px 20px rgba(255,214,10,.35); }
+  .ask-bar button:active { transform:scale(.97); }
+
+  .ai-response { background:var(--card); border-left:4px solid var(--yellow); border-radius:12px; padding:14px 18px; margin-bottom:22px; font-size:.92rem; line-height:1.7; display:none; }
+  .ai-response.visible { display:block; animation:fadeIn .3s ease; }
+  .ai-label { font-family:'Russo One',sans-serif; color:var(--yellow); font-size:.72rem; letter-spacing:2px; margin-bottom:8px; }
+
+  .section-title { font-family:'Russo One',sans-serif; font-size:.95rem; letter-spacing:2px; color:var(--yellow); margin-bottom:12px; display:flex; align-items:center; gap:10px; text-transform:uppercase; }
+  .section-title::after { content:''; flex:1; height:2px; background:linear-gradient(90deg,rgba(255,214,10,.3),transparent); }
+
+  .raids-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-bottom:30px; }
+  .raid-card { background:var(--card); border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.06); transition:transform .2s,box-shadow .2s; }
+  .raid-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,.4); }
+  .raid-card-header { padding:16px; display:flex; align-items:center; gap:12px; }
+  .raid-img-wrap { width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:rgba(255,255,255,.05); }
+  .raid-img-wrap img { width:88px; height:88px; object-fit:contain; filter:drop-shadow(0 4px 12px rgba(0,0,0,.5)); }
+  .raid-info { flex:1; }
+  .stars { font-size:.68rem; color:var(--yellow); margin-bottom:4px; }
+  .raid-name { font-family:'Russo One',sans-serif; font-size:1.05rem; letter-spacing:.5px; line-height:1.2; margin-bottom:6px; }
+  .raid-type { display:flex; gap:5px; flex-wrap:wrap; }
+  .type-badge { padding:2px 8px; border-radius:20px; font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px; }
+  .raid-dates { padding:10px 16px; background:rgba(0,0,0,.2); font-size:.76rem; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:6px; }
+  .shiny-badge { background:linear-gradient(135deg,#ffd700,#ff8c00); color:#000; padding:2px 8px; border-radius:20px; font-size:.62rem; font-weight:900; }
+  .hot-badge { background:var(--red); color:white; padding:2px 8px; border-radius:20px; font-size:.62rem; font-weight:900; animation:pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.6} }
+  .countdown { padding:10px 16px; background:rgba(0,0,0,.15); display:flex; align-items:center; gap:8px; font-size:.76rem; border-top:1px solid rgba(255,255,255,.04); }
+  .countdown-bar { flex:1; height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
+  .countdown-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--green),var(--yellow)); }
+  .counter-chips { display:flex; gap:6px; flex-wrap:wrap; padding:10px 16px; background:rgba(0,0,0,.15); border-top:1px solid rgba(255,255,255,.04); }
+  .counter-chip { display:flex; align-items:center; gap:5px; background:rgba(255,255,255,.06); border-radius:20px; padding:3px 10px 3px 3px; font-size:.7rem; font-weight:700; }
+  .counter-chip img { width:28px; height:28px; object-fit:contain; }
+
+  .upcoming-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:30px; }
+  .upcoming-card { background:var(--card); border-radius:14px; padding:14px 12px; text-align:center; border:1px solid rgba(255,255,255,.05); transition:transform .2s; }
+  .upcoming-card:hover { transform:scale(1.03); }
+  .upcoming-card img { width:70px; height:70px; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
+  .up-name { font-family:'Russo One',sans-serif; font-size:.78rem; margin-top:6px; }
+  .up-dates { font-size:.65rem; color:var(--muted); margin-top:3px; }
+  .up-region { font-size:.6rem; color:var(--orange); margin-top:2px; font-weight:700; }
+
+  .events-list { display:flex; flex-direction:column; gap:10px; margin-bottom:30px; }
+  .event-item { background:var(--card); border-radius:14px; padding:13px 16px; display:flex; gap:12px; align-items:center; border:1px solid rgba(255,255,255,.05); transition:transform .15s; position:relative; overflow:hidden; }
+  .event-item::before { content:''; position:absolute; left:0;top:0;bottom:0; width:4px; }
+  .event-item.community::before { background:var(--green); }
+  .event-item.raid::before { background:var(--red); }
+  .event-item.mega::before { background:var(--purple); }
+  .event-item.special::before { background:var(--orange); }
+  .event-item.max::before { background:#48cae4; }
+  .event-item:hover { transform:translateX(4px); }
+  .event-date { text-align:center; min-width:42px; }
+  .event-day { font-family:'Russo One',sans-serif; font-size:1.4rem; color:var(--yellow); line-height:1; }
+  .event-month { font-size:.58rem; text-transform:uppercase; color:var(--muted); letter-spacing:1px; font-weight:700; }
+  .event-divider { width:1px; height:34px; background:rgba(255,255,255,.08); }
+  .event-content { flex:1; }
+  .event-tag { font-size:.58rem; font-weight:900; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
+  .event-item.community .event-tag { color:var(--green); }
+  .event-item.raid .event-tag { color:var(--red); }
+  .event-item.special .event-tag { color:var(--orange); }
+  .event-item.max .event-tag { color:#48cae4; }
+  .event-item.mega .event-tag { color:var(--purple); }
+  .event-title { font-weight:900; font-size:.92rem; }
+  .event-desc { font-size:.72rem; color:var(--muted); margin-top:2px; }
+  .event-pokemon-imgs { display:flex; }
+  .event-pokemon-imgs img { width:44px; height:44px; object-fit:contain; filter:drop-shadow(0 2px 6px rgba(0,0,0,.4)); margin-left:-8px; }
+  .event-pokemon-imgs img:first-child { margin-left:0; }
+
+  .max-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px; margin-bottom:30px; }
+  .max-card { background:linear-gradient(135deg,#0d1b4b,#1a1a35); border:1px solid rgba(72,202,228,.2); border-radius:16px; padding:16px; text-align:center; transition:transform .2s; }
+  .max-card:hover { transform:scale(1.03); border-color:rgba(72,202,228,.5); }
+  .max-card img { width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 0 12px rgba(72,202,228,.4)); }
+  .max-name { font-family:'Russo One',sans-serif; font-size:.88rem; margin-top:8px; }
+  .max-dates { font-size:.66rem; color:var(--muted); margin-top:4px; }
+
+  .t-psychic{background:rgba(255,101,153,.2);color:#ff6599}
+  .t-fairy{background:rgba(238,153,172,.2);color:#ee99ac}
+  .t-electric{background:rgba(248,208,48,.2);color:#f8d030}
+  .t-dragon{background:rgba(111,53,252,.2);color:#a87aff}
+  .t-poison{background:rgba(163,62,161,.2);color:#d8a0d8}
+  .t-rock{background:rgba(185,160,109,.2);color:#c8b07a}
+  .t-ghost{background:rgba(115,87,151,.2);color:#b09fcc}
+  .t-dark{background:rgba(112,87,70,.2);color:#c8a878}
+  .t-water{background:rgba(104,144,240,.2);color:#78b0f0}
+  .t-grass{background:rgba(120,200,80,.2);color:#78d048}
+  .t-fire{background:rgba(240,128,48,.2);color:#f08030}
+  .t-flying{background:rgba(168,144,240,.2);color:#a890f0}
+  .t-fighting{background:rgba(192,48,40,.2);color:#e05040}
+  .t-steel{background:rgba(184,184,208,.2);color:#b8b8d0}
+  .t-bug{background:rgba(168,184,32,.2);color:#a8b820}
+  .t-normal{background:rgba(168,168,120,.2);color:#a8a878}
+  .t-ice{background:rgba(152,216,216,.2);color:#98d8d8}
+  .t-ground{background:rgba(224,192,104,.2);color:#e0c068}
+
+  .bg-electric{background:linear-gradient(135deg,rgba(248,208,48,.12),var(--card))}
+  .bg-dragon{background:linear-gradient(135deg,rgba(111,53,252,.12),var(--card))}
+  .bg-psychic{background:linear-gradient(135deg,rgba(255,101,153,.12),var(--card))}
+  .bg-poison{background:linear-gradient(135deg,rgba(163,62,161,.12),var(--card))}
+  .bg-fire{background:linear-gradient(135deg,rgba(240,128,48,.12),var(--card))}
+  .bg-grass{background:linear-gradient(135deg,rgba(120,200,80,.12),var(--card))}
+  .bg-water{background:linear-gradient(135deg,rgba(104,144,240,.12),var(--card))}
+
+  .loading{display:flex;align-items:center;justify-content:center;gap:8px;padding:24px;color:var(--muted);font-size:.85rem}
+  .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .card-anim{animation:fadeIn .4s ease both}
+
+  .refresh-btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted);padding:6px 14px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.76rem;cursor:pointer;transition:all .2s;margin-left:auto;display:block;margin-bottom:10px}
+  .refresh-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+
+  footer{text-align:center;padding:22px;color:var(--muted);font-size:.7rem;border-top:1px solid rgba(255,255,255,.05);margin-top:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <svg class="pokeball-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="white" stroke="#333" stroke-width="4"/>
+      <path d="M2 50 Q2 2 50 2 Q98 2 98 50 Z" fill="#e63946"/>
+      <rect x="2" y="46" width="96" height="8" fill="#333"/>
+      <circle cx="50" cy="50" r="14" fill="white" stroke="#333" stroke-width="4"/>
+      <circle cx="50" cy="50" r="7" fill="white"/>
+    </svg>
+    <h1>POKEEVENTS GO</h1>
+    <div class="update-badge" id="last-update">--:--</div>
+  </div>
+  <div class="header-pokemon" id="header-pokemon"></div>
+</header>
+
+<div class="container">
+
+
+
+  <div class="section-title">⭐ Incursiones Activas Ahora</div>
+  <button class="refresh-btn" onclick="loadRaids()">🔄 Actualizar</button>
+  <div class="raids-grid" id="raids-grid"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+
+  <div class="section-title">🔜 Próximas Incursiones — Mayo 2026</div>
+  <div class="upcoming-grid" id="upcoming-grid"></div>
+
+  <div class="section-title">📅 Eventos Próximos</div>
+  <div class="events-list" id="events-list"></div>
+
+  <div class="section-title">💥 Combates Max</div>
+  <div class="max-grid" id="max-grid"></div>
+
+</div>
+
+<footer>PokeEvents GO • Imágenes via PokeAPI • No afiliado con Niantic</footer>
+
+<script>
+function getImg(id) {
+  // Use multiple CDN options
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+}
+function onImgError(el, id) {
+  const fallbacks = [
+    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+    `https://img.pokemondb.net/artwork/large/${getPokeName(id)}.jpg`,
+  ];
+  const step = parseInt(el.dataset.fallback||'0');
+  if (step < fallbacks.length) {
+    el.dataset.fallback = String(step+1);
+    el.src = fallbacks[step];
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+const nameMap = {785:'tapu-koko',786:'tapu-lele',787:'tapu-bulu',788:'tapu-fini',793:'nihilego',794:'buzzwole',795:'pheromosa',796:'xurkitree',381:'latios',384:'rayquaza',149:'dragonite',468:'togekiss',445:'garchomp',530:'excadrill',383:'groudon',382:'kyogre',243:'raikou',260:'swampert',146:'moltres',150:'mewtwo',6:'charizard',3:'venusaur',9:'blastoise',94:'gengar',377:'regirock',379:'registeel',213:'shuckle',546:'cottonee',244:'entei',915:'lechonk',633:'deino',334:'altaria'};
+function getPokeName(id) { return nameMap[id]||'missingno'; }
+
+function pImg(id, alt, cls='') {
+  return `<img src="${getImg(id)}" alt="${alt}" class="${cls}" onerror="onImgError(this,${id})" loading="lazy">`;
+}
+
+const raids = [
+  { name:"Tapu Koko", id:785, stars:"⭐⭐⭐⭐⭐", types:["electric","fairy"], bg:"bg-electric", dates:"22 abr – 28 abr", shiny:true, hot:true, progress:50, counters:[{name:"Garchomp",id:445},{name:"Excadrill",id:530},{name:"Groudon",id:383}] },
+  { name:"Latios Oscuro", id:381, stars:"⭐⭐⭐⭐⭐ 🌑", types:["dragon","psychic"], bg:"bg-dragon", dates:"Fines de semana – 5 mayo", shiny:true, hot:false, progress:70, counters:[{name:"Rayquaza",id:384},{name:"Dragonite",id:149},{name:"Togekiss",id:468}] },
+  { name:"Venusaur Gigamax", id:3, stars:"★★★★★★ GIGAMAX", types:["grass","poison"], bg:"bg-grass", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, progress:15, counters:[{name:"Moltres",id:146},{name:"Charizard",id:6},{name:"Mewtwo",id:150}] },
+  { name:"Charizard Gigamax", id:6, stars:"★★★★★★ GIGAMAX", types:["fire","flying"], bg:"bg-fire", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, progress:15, counters:[{name:"Kyogre",id:382},{name:"Raikou",id:243},{name:"Swampert",id:260}] },
+];
+
+const upcoming = [
+  { name:"Tapu Lele", id:786, dates:"29 abr – 5 may", region:"" },
+  { name:"Nihilego", id:793, dates:"6 – 12 mayo", region:"" },
+  { name:"Buzzwole", id:794, dates:"13 – 19 mayo", region:"🌎 América" },
+  { name:"Pheromosa", id:795, dates:"13 – 19 mayo", region:"🌍 Europa" },
+  { name:"Xurkitree", id:796, dates:"13 – 19 mayo", region:"🌏 Asia-Pac" },
+  { name:"Tapu Bulu", id:787, dates:"20 – 26 mayo", region:"" },
+  { name:"Tapu Fini", id:788, dates:"27 may – 2 jun", region:"" },
+];
+
+const events = [
+  { day:25, month:"ABR", type:"max", tag:"💥 GIGAMAX HOY", title:"Charizard, Venusaur, Blastoise & Gengar", desc:"2:00 PM – 5:00 PM • Shiny disponible ✨", pokemon:[6,3,9,94] },
+  { day:28, month:"ABR", type:"raid", tag:"ÚLTIMA OPORTUNIDAD", title:"Termina Tapu Koko ⚡", desc:"Último día en incursiones de 5 estrellas", pokemon:[785] },
+  { day:2, month:"MAY", type:"raid", tag:"DÍA DE RAIDS OSCURAS", title:"Entei Oscuro", desc:"Mayor probabilidad de Shiny ✨ • 2-5 PM", pokemon:[244] },
+  { day:9, month:"MAY", type:"community", tag:"COMMUNITY DAY", title:"Lechonk", desc:"2x Candy • Shiny disponible • 2-5 PM", pokemon:[915] },
+  { day:16, month:"MAY", type:"community", tag:"COMMUNITY DAY CLÁSICO", title:"Deino → Hydreigon", desc:"Hydreigon aprende Brutal Swing ⚔️", pokemon:[633] },
+  { day:23, month:"MAY", type:"mega", tag:"DÍA DE MEGAINCURSIONES", title:"Mega Raid Day", desc:"Mega Altaria y más legendarios", pokemon:[334] },
+  { day:29, month:"MAY", type:"special", tag:"🌟 GO FEST TOKIO 2026", title:"Pokémon GO Fest 2026", desc:"Mewtwo regresa en raids • Zeraora debuta", pokemon:[150] },
+];
+
+const maxBattles = [
+  { name:"Regirock", id:377, dates:"20–26 abr (HOY)" },
+  { name:"Shuckle", id:213, dates:"27 abr – 3 mayo" },
+  { name:"Cottonee", id:546, dates:"4 – 10 mayo" },
+  { name:"Registeel", id:379, dates:"18 – 24 mayo" },
+];
+
+const headerPokes = [
+  {name:"Tapu Koko",id:785,label:"5★ ACTIVO"},
+  {name:"Charizard G-Max",id:6,label:"GIGAMAX HOY"},
+  {name:"Venusaur G-Max",id:3,label:"GIGAMAX HOY"},
+  {name:"Blastoise G-Max",id:9,label:"GIGAMAX HOY"},
+  {name:"Gengar G-Max",id:94,label:"GIGAMAX HOY"},
+  {name:"Latios Oscuro",id:381,label:"OSCURO"},
+  {name:"Regirock",id:377,label:"MAX BATTLE"},
+];
+
+function loadHeaderPokemon() {
+  document.getElementById('header-pokemon').innerHTML = headerPokes.map(p => `
+    <div class="header-poke-chip">
+      ${pImg(p.id, p.name)}
+      <div><span class="chip-name">${p.name}</span><span class="chip-label">${p.label}</span></div>
+    </div>`).join('');
+}
+
+function loadRaids() {
+  const grid = document.getElementById('raids-grid');
+  grid.innerHTML = '';
+  raids.forEach((r,i) => {
+    const el = document.createElement('div');
+    el.className = `raid-card card-anim ${r.bg}`;
+    el.style.animationDelay = `${i*.1}s`;
+    el.innerHTML = `
+      <div class="raid-card-header">
+        <div class="raid-img-wrap">${pImg(r.id, r.name)}</div>
+        <div class="raid-info">
+          <div class="stars">${r.stars}</div>
+          <div class="raid-name">${r.name}</div>
+          <div class="raid-type">${r.types.map(t=>`<span class="type-badge t-${t}">${t}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="raid-dates">
+        <span>📅 ${r.dates}</span>
+        <div style="display:flex;gap:5px">
+          ${r.hot?'<span class="hot-badge">🔥 ACTIVO</span>':''}
+          ${r.shiny?'<span class="shiny-badge">✨ SHINY</span>':''}
+        </div>
+      </div>
+      <div class="countdown">
+        <span style="font-size:.7rem;color:var(--muted)">Tiempo restante:</span>
+        <div class="countdown-bar"><div class="countdown-fill" style="width:${r.progress}%"></div></div>
+        <span style="font-size:.7rem;color:var(--muted)">${r.progress}%</span>
+      </div>
+      <div class="counter-chips">
+        <span style="font-size:.66rem;color:var(--muted);align-self:center;margin-right:4px;font-weight:700">Counters:</span>
+        ${r.counters.map(c=>`<div class="counter-chip">${pImg(c.id, c.name)}<span>${c.name}</span></div>`).join('')}
+      </div>`;
+    grid.appendChild(el);
+  });
+}
+
+function loadUpcoming() {
+  document.getElementById('upcoming-grid').innerHTML = upcoming.map((u,i) => `
+    <div class="upcoming-card card-anim" style="animation-delay:${i*.07}s">
+      ${pImg(u.id, u.name)}
+      <div class="up-name">${u.name}</div>
+      <div class="up-dates">📅 ${u.dates}</div>
+      ${u.region?`<div class="up-region">${u.region}</div>`:''}
+    </div>`).join('');
+}
+
+function loadEvents() {
+  document.getElementById('events-list').innerHTML = events.map((ev,i) => `
+    <div class="event-item ${ev.type} card-anim" style="animation-delay:${i*.07}s">
+      <div class="event-date">
+        <div class="event-day">${ev.day}</div>
+        <div class="event-month">${ev.month}</div>
+      </div>
+      <div class="event-divider"></div>
+      <div class="event-content">
+        <div class="event-tag">${ev.tag}</div>
+        <div class="event-title">${ev.title}</div>
+        <div class="event-desc">${ev.desc}</div>
+      </div>
+      ${ev.pokemon.length?`<div class="event-pokemon-imgs">${ev.pokemon.slice(0,4).map(id=>pImg(id,'')).join('')}</div>`:''}
+    </div>`).join('');
+}
+
+function loadMax() {
+  document.getElementById('max-grid').innerHTML = maxBattles.map((mb,i) => `
+    <div class="max-card card-anim" style="animation-delay:${i*.1}s">
+      ${pImg(mb.id, mb.name)}
+      <div class="max-name">${mb.name}</div>
+      <div class="max-dates">💥 ${mb.dates}</div>
+    </div>`).join('');
+}
+
+
+function updateTime() {
+  const now = new Date();
+  document.getElementById('last-update').textContent = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+}
+
+loadHeaderPokemon();
+loadRaids();
+loadUpcoming();
+loadEvents();
+loadMax();
+updateTime();
+setInterval(updateTime,60000);
+</script>
+</body>
+</html>
