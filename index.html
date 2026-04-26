@@ -286,8 +286,8 @@ function pImg(id, alt, cls='') {
 const raids = [
   { name:"Tapu Koko", id:785, stars:"⭐⭐⭐⭐⭐", types:["electric","fairy"], bg:"bg-electric", dates:"22 abr – 28 abr", shiny:true, hot:true, start:[2026,3,22,0,0], end:[2026,3,28,23,59], counters:[{name:"Garchomp",id:445},{name:"Excadrill",id:530},{name:"Groudon",id:383}] },
   { name:"Latios Oscuro", id:381, stars:"⭐⭐⭐⭐⭐ 🌑", types:["dragon","psychic"], bg:"bg-dragon", dates:"Fines de semana – 5 mayo", shiny:true, hot:false, start:[2026,3,1,0,0], end:[2026,4,5,23,59], counters:[{name:"Rayquaza",id:384},{name:"Dragonite",id:149},{name:"Togekiss",id:468}] },
-  { name:"Venusaur Gigamax", id:3, stars:"★★★★★★ GIGAMAX", types:["grass","poison"], bg:"bg-grass", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,26,14,0], end:[2026,3,26,17,0], counters:[{name:"Moltres",id:146},{name:"Charizard",id:6},{name:"Mewtwo",id:150}] },
-  { name:"Charizard Gigamax", id:6, stars:"★★★★★★ GIGAMAX", types:["fire","flying"], bg:"bg-fire", dates:"HOY 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,26,14,0], end:[2026,3,26,17,0], counters:[{name:"Kyogre",id:382},{name:"Raikou",id:243},{name:"Swampert",id:260}] },
+  { name:"Venusaur Gigamax", id:3, stars:"★★★★★★ GIGAMAX", types:["grass","poison"], bg:"bg-grass", dates:"25 abr 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,25,14,0], end:[2026,3,25,17,0], hideAt:[2026,3,26,14,0], counters:[{name:"Moltres",id:146},{name:"Charizard",id:6},{name:"Mewtwo",id:150}] },
+  { name:"Charizard Gigamax", id:6, stars:"★★★★★★ GIGAMAX", types:["fire","flying"], bg:"bg-fire", dates:"25 abr 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,25,14,0], end:[2026,3,25,17,0], hideAt:[2026,3,26,14,0], counters:[{name:"Kyogre",id:382},{name:"Raikou",id:243},{name:"Swampert",id:260}] },
 ];
 
 const upcoming = [
@@ -370,12 +370,14 @@ function loadRaids() {
   grid.innerHTML = '';
   const nowLocal = getNowInTz(selectedTz);
   raids.forEach((r,i) => {
-    const startDate = new Date(...r.start);
-    const endDate   = new Date(...r.end);
+    const startDate  = new Date(...r.start);
+    const endDate    = new Date(...r.end);
+    const hideDate   = r.hideAt ? new Date(...r.hideAt) : null;
+    if (hideDate && nowLocal >= hideDate) return;
     const totalMs   = endDate - startDate;
     const remainMs  = endDate - nowLocal;
     const pct       = Math.max(0, Math.min(100, (remainMs / totalMs) * 100));
-    const color     = barColor(pct);
+    const color     = remainMs > 0 ? barColor(pct) : '#e63946';
     const remainTxt = formatRemaining(remainMs);
     const el = document.createElement('div');
     el.className = `raid-card card-anim ${r.bg}`;
