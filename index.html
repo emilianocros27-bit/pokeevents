@@ -179,6 +179,14 @@
 
   footer{text-align:center;padding:22px;color:var(--muted);font-size:.7rem;border-top:1px solid rgba(255,255,255,.05);margin-top:14px}
 
+  .poke-mes-card{background:var(--card);border-radius:24px;padding:30px 20px;text-align:center;border:1px solid rgba(255,255,255,.06);margin-bottom:30px;position:relative;overflow:hidden}
+  .poke-mes-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,214,10,.08),transparent 70%);pointer-events:none}
+  .poke-mes-img{width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 8px 32px rgba(255,214,10,.25));animation:flotar 3s ease-in-out infinite}
+  @keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .poke-mes-month{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);margin-bottom:8px}
+  .poke-mes-name{font-family:'Russo One',sans-serif;font-size:2rem;letter-spacing:1px;margin-bottom:6px}
+  .poke-mes-desc{font-size:.82rem;color:var(--muted);max-width:320px;margin:0 auto;line-height:1.6}
+
   .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;position:relative}
   .tz-wrapper{position:relative}
   .tz-btn{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);color:white;border-radius:20px;padding:4px 10px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap}
@@ -239,6 +247,14 @@
 
   <div class="section-title">💥 Combates Max</div>
   <div class="max-grid" id="max-grid"></div>
+
+  <div class="section-title">⭐ Pokémon del Mes</div>
+  <div class="poke-mes-card">
+    <div class="poke-mes-month">Mayo 2026</div>
+    <img class="poke-mes-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/915.png" alt="Lechonk" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/915.png'">
+    <div class="poke-mes-name">Lechonk</div>
+    <div class="poke-mes-desc">Protagonista del Community Day de mayo • Aparece con mayor frecuencia en el mundo • Shiny disponible ✨</div>
+  </div>
 
 </div>
 
