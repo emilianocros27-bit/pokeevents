@@ -17,6 +17,16 @@
     --orange: #fb8500;
     --purple: #9b5de5;
   }
+  body.light {
+    --dark: #f0f2f8;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #666688;
+  }
+  body.light::before { background:radial-gradient(ellipse at 20% 20%,rgba(230,57,70,.04) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,119,182,.04) 0%,transparent 50%); }
+  body.light .raid-card,.body.light .upcoming-card,.body.light .event-item,.body.light .max-card { box-shadow:0 2px 12px rgba(0,0,0,.08); }
+  body.light .ask-bar,.body.light .ai-response { border-color:rgba(230,57,70,.2); }
+  body.light .max-card { background:linear-gradient(135deg,#e8eaf6,#ffffff); border-color:rgba(72,202,228,.3); }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Outfit',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; overflow-x:hidden; }
   body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 20% 20%,rgba(230,57,70,.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,119,182,.07) 0%,transparent 50%); pointer-events:none; z-index:0; }
@@ -158,6 +168,8 @@
   .notif-btn{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:20px;padding:3px 10px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:3px;white-space:nowrap}
   .notif-btn:hover{border-color:var(--green);color:var(--green)}
   .notif-btn.active{border-color:var(--green);color:var(--green);background:rgba(6,214,160,.1)}
+  .theme-btn{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:20px;padding:3px 10px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:3px;white-space:nowrap}
+  .theme-btn:hover{border-color:var(--yellow);color:var(--yellow)}
   .search-bar{background:var(--card);border:2px solid rgba(255,214,10,.3);border-radius:12px;padding:10px 14px;display:none;margin-bottom:16px;animation:fadeIn .2s ease}
   .search-bar.visible{display:flex;align-items:center;gap:10px}
   .search-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600}
@@ -197,6 +209,7 @@
       </div>
       <div class="update-badge" id="last-update">--:--</div>
       <button class="notif-btn" id="notif-btn" onclick="toggleNotifications()">🔕 Notificaciones</button>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ Modo claro</button>
     </div>
   </div>
   <div class="header-pokemon" id="header-pokemon"></div>
@@ -425,6 +438,20 @@ async function toggleNotifications() {
   updateNotifBtn();
 }
 
+let isLight = localStorage.getItem('pokeevents_theme') === 'light';
+
+function applyTheme() {
+  document.body.classList.toggle('light', isLight);
+  const btn = document.getElementById('theme-btn');
+  btn.textContent = isLight ? '🌙 Modo oscuro' : '☀️ Modo claro';
+}
+
+function toggleTheme() {
+  isLight = !isLight;
+  localStorage.setItem('pokeevents_theme', isLight ? 'light' : 'dark');
+  applyTheme();
+}
+
 let searchQuery = '';
 
 function toggleSearch() {
@@ -603,6 +630,7 @@ function updateTime() {
   document.getElementById('last-update').textContent = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',timeZone:selectedTz});
 }
 
+applyTheme();
 loadHeaderPokemon();
 loadRaids();
 loadUpcoming();
