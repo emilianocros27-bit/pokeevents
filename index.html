@@ -140,6 +140,10 @@
   .bg-grass{background:linear-gradient(135deg,rgba(120,200,80,.12),var(--card))}
   .bg-water{background:linear-gradient(135deg,rgba(104,144,240,.12),var(--card))}
 
+  .days-badge{display:inline-block;font-size:.65rem;font-weight:900;padding:2px 9px;border-radius:20px;margin-top:4px;background:rgba(255,255,255,.08);color:var(--muted)}
+  .days-badge.hoy{background:rgba(255,214,10,.2);color:var(--yellow)}
+  .days-badge.pronto{background:rgba(6,214,160,.15);color:var(--green)}
+
   .loading{display:flex;align-items:center;justify-content:center;gap:8px;padding:24px;color:var(--muted);font-size:.85rem}
   .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -357,6 +361,20 @@ function barColor(pct) {
   return '#e63946';
 }
 
+const monthMap = {ENE:0,FEB:1,MAR:2,ABR:3,MAY:4,JUN:5,JUL:6,AGO:7,SEP:8,OCT:9,NOV:10,DIC:11};
+
+function getDaysLabel(day, month) {
+  const eventDate = new Date(2026, monthMap[month], day);
+  const now = getNowInTz(selectedTz);
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.round((eventDate - today) / 86400000);
+  if (diff < 0)  return null;
+  if (diff === 0) return { text:'HOY', cls:'hoy' };
+  if (diff === 1) return { text:'Mañana', cls:'pronto' };
+  if (diff <= 7)  return { text:`En ${diff} días`, cls:'pronto' };
+  return { text:`En ${diff} días`, cls:'' };
+}
+
 function loadHeaderPokemon() {
   document.getElementById('header-pokemon').innerHTML = headerPokes.map(p => `
     <div class="header-poke-chip">
@@ -432,6 +450,7 @@ function loadEvents() {
       <div class="event-content">
         <div class="event-tag">${ev.tag}</div>
         <div class="event-title">${ev.title}</div>
+        ${(d => d ? `<span class="days-badge ${d.cls}">${d.text}</span>` : '')(getDaysLabel(ev.day, ev.month))}
         <div class="event-desc">${ev.desc}</div>
       </div>
       ${ev.pokemon.length?`<div class="event-pokemon-imgs">${ev.pokemon.slice(0,4).map(id=>pImg(id,'')).join('')}</div>`:''}
