@@ -341,13 +341,11 @@ function pImg(id, alt, cls='') {
 const raids = [
   { name:"Tapu Koko", id:785, stars:"⭐⭐⭐⭐⭐", types:["electric","fairy"], bg:"bg-electric", dates:"22 abr – 28 abr", shiny:true, hot:true, start:[2026,3,22,0,0], end:[2026,3,28,23,59], counters:[{name:"Garchomp",id:445},{name:"Excadrill",id:530},{name:"Groudon",id:383}] },
   { name:"Latios Oscuro", id:381, stars:"⭐⭐⭐⭐⭐ 🌑", types:["dragon","psychic"], bg:"bg-dragon", dates:"Fines de semana – 5 mayo", shiny:true, hot:false, start:[2026,3,1,0,0], end:[2026,4,5,23,59], counters:[{name:"Rayquaza",id:384},{name:"Dragonite",id:149},{name:"Togekiss",id:468}] },
-  { name:"Venusaur Gigamax", id:3, stars:"★★★★★★ GIGAMAX", types:["grass","poison"], bg:"bg-grass", dates:"25 abr 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,25,14,0], end:[2026,3,25,17,0], hideAt:[2026,3,26,14,0], counters:[{name:"Moltres",id:146},{name:"Charizard",id:6},{name:"Mewtwo",id:150}] },
-  { name:"Charizard Gigamax", id:6, stars:"★★★★★★ GIGAMAX", types:["fire","flying"], bg:"bg-fire", dates:"25 abr 2:00 – 5:00 PM", shiny:true, hot:true, start:[2026,3,25,14,0], end:[2026,3,25,17,0], hideAt:[2026,3,26,14,0], counters:[{name:"Kyogre",id:382},{name:"Raikou",id:243},{name:"Swampert",id:260}] },
+  { name:"Tapu Lele", id:786, stars:"⭐⭐⭐⭐⭐", types:["psychic","fairy"], bg:"bg-psychic", dates:"29 abr – 5 mayo", shiny:true, hot:true, start:[2026,3,29,0,0], end:[2026,4,5,23,59], counters:[{name:"Metagross",id:376},{name:"Gengar",id:94},{name:"Nihilego",id:793}] },
+  { name:"Mega Banette", id:354, stars:"⭐⭐⭐⭐⭐ MEGA", types:["ghost"], bg:"bg-ghost", dates:"29 abr – 5 mayo • 6:00–21:00", shiny:true, hot:true, start:[2026,3,29,6,0], end:[2026,4,5,21,0], counters:[{name:"Tyranitar",id:248},{name:"Darkrai",id:491},{name:"Hydreigon",id:635}] },
 ];
 
 const upcoming = [
-  { name:"Mega Banette", id:354, dates:"29 abr – 5 mayo • 6:00–21:00", region:"⭐ MEGA" },
-  { name:"Tapu Lele", id:786, dates:"29 abr – 5 may", region:"" },
   { name:"Nihilego", id:793, dates:"6 – 12 mayo", region:"" },
   { name:"Buzzwole", id:794, dates:"13 – 19 mayo", region:"🌎 América" },
   { name:"Pheromosa", id:795, dates:"13 – 19 mayo", region:"🌍 Europa" },
@@ -357,7 +355,6 @@ const upcoming = [
 ];
 
 const events = [
-  { day:25, month:"ABR", type:"max", tag:"💥 GIGAMAX HOY", title:"Charizard, Venusaur, Blastoise & Gengar", desc:"2:00 PM – 5:00 PM • Shiny disponible ✨", pokemon:[6,3,9,94] },
   { day:28, month:"ABR", type:"raid", tag:"ÚLTIMA OPORTUNIDAD", title:"Termina Tapu Koko ⚡", desc:"Último día en incursiones de 5 estrellas", pokemon:[785] },
   { day:2, month:"MAY", type:"raid", tag:"DÍA DE RAIDS OSCURAS", title:"Entei Oscuro", desc:"Mayor probabilidad de Shiny ✨ • 2-5 PM", pokemon:[244] },
   { day:9, month:"MAY", type:"community", tag:"COMMUNITY DAY", title:"Lechonk", desc:"2x Candy • Shiny disponible • 2-5 PM", pokemon:[915] },
@@ -378,10 +375,8 @@ const maxBattles = [
 
 const headerPokes = [
   {name:"Tapu Koko",id:785,label:"5★ ACTIVO"},
-  {name:"Charizard G-Max",id:6,label:"TERMINADO"},
-  {name:"Venusaur G-Max",id:3,label:"TERMINADO"},
-  {name:"Blastoise G-Max",id:9,label:"TERMINADO"},
-  {name:"Gengar G-Max",id:94,label:"TERMINADO"},
+  {name:"Tapu Lele",id:786,label:"5★ PRÓXIMO"},
+  {name:"Mega Banette",id:354,label:"MEGA PRÓXIMO"},
   {name:"Latios Oscuro",id:381,label:"OSCURO"},
   {name:"Regirock",id:377,label:"MAX BATTLE"},
 ];
