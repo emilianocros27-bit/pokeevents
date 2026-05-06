@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA 2026 Playoffs — Quintetos Titulares</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #0a0a1a;
+    --card: #12122a;
+    --text: #f0f0ff;
+    --muted: #8888aa;
+    --yellow: #ffd60a;
+    --orange: #fb8500;
+    --green: #06d6a0;
+    --red: #e63946;
+    --blue: #4cc9f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--dark); color: var(--text); min-height: 100vh; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 20% 20%, rgba(76,201,240,.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(255,214,10,.05) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+
+  header { background: linear-gradient(135deg, #0d1b4b 0%, #1a1a35 60%, #0d1b4b 100%); padding: 20px 24px; text-align: center; border-bottom: 2px solid rgba(76,201,240,.25); position: relative; z-index: 1; }
+  header h1 { font-family: 'Russo One', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: white; text-shadow: 0 0 20px rgba(76,201,240,.4); }
+  header p { color: var(--muted); font-size: .82rem; margin-top: 6px; }
+  .nba-logo { font-size: 2rem; margin-bottom: 8px; display: block; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 28px 16px; position: relative; z-index: 1; }
+
+  .conf-title { font-family: 'Russo One', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--yellow); text-transform: uppercase; margin: 32px 0 16px; display: flex; align-items: center; gap: 10px; }
+  .conf-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg, rgba(255,214,10,.4), transparent); }
+
+  .series { margin-bottom: 28px; background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,.06); }
+  .series-header { padding: 14px 20px; background: rgba(0,0,0,.3); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .series-title { font-family: 'Russo One', sans-serif; font-size: .95rem; letter-spacing: 1px; }
+  .series-round { font-size: .65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); background: rgba(76,201,240,.12); padding: 3px 10px; border-radius: 20px; }
+  .series-body { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) { .series-body { grid-template-columns: 1fr; } }
+
+  .team-block { padding: 18px 20px; }
+  .team-block:first-child { border-right: 1px solid rgba(255,255,255,.06); }
+  .team-name { font-family: 'Russo One', sans-serif; font-size: .85rem; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .seed-badge { font-size: .6rem; font-weight: 900; background: rgba(255,255,255,.1); color: var(--muted); padding: 2px 6px; border-radius: 6px; }
+
+  .players-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .player-card { text-align: center; width: 88px; flex-shrink: 0; }
+  .player-img-wrap { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.08); margin: 0 auto 6px; display: flex; align-items: flex-end; justify-content: center; }
+  .player-img-wrap img { width: 80px; height: 80px; object-fit: cover; object-position: top center; }
+  .player-name { font-size: .62rem; font-weight: 700; line-height: 1.3; color: var(--text); }
+  .player-pos { font-size: .55rem; color: var(--muted); margin-top: 2px; font-weight: 600; }
+
+  /* Team accent colors */
+  .det .player-img-wrap { border-color: rgba(200,16,46,.4); }
+  .det .team-name { color: #c8102e; }
+  .cle .player-img-wrap { border-color: rgba(134,0,56,.4); }
+  .cle .team-name { color: #860038; }
+  .nyk .player-img-wrap { border-color: rgba(0,107,182,.4); }
+  .nyk .team-name { color: #006BB6; }
+  .phi .player-img-wrap { border-color: rgba(0,107,182,.4); }
+  .phi .team-name { color: #006BB6; }
+  .okc .player-img-wrap { border-color: rgba(0,125,195,.4); }
+  .okc .team-name { color: #007DC5; }
+  .lal .player-img-wrap { border-color: rgba(253,185,39,.4); }
+  .lal .team-name { color: #FDB927; }
+  .sas .player-img-wrap { border-color: rgba(196,206,211,.3); }
+  .sas .team-name { color: #C4CED4; }
+  .min .player-img-wrap { border-color: rgba(0,169,224,.4); }
+  .min .team-name { color: #00A9E0; }
+
+  .vs-badge { display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+  .vs { font-family: 'Russo One', sans-serif; font-size: .75rem; color: var(--muted); }
+
+  .legend { font-size: .7rem; color: var(--muted); text-align: center; margin-top: 24px; padding: 12px; background: var(--card); border-radius: 12px; border: 1px solid rgba(255,255,255,.05); }
+  .legend span { color: var(--orange); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .series { animation: fadeIn .4s ease both; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="nba-logo">🏀</span>
+  <h1>NBA 2026 PLAYOFFS</h1>
+  <p>Quintetos Titulares — Semifinales de Conferencia · Mayo 2026</p>
+</header>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════
+       CONFERENCIA ESTE
+  ═══════════════════════════════════════ -->
+  <div class="conf-title">🏆 Conferencia Este — Semifinales</div>
+
+  <!-- Series 1: Pistons vs Cavaliers -->
+  <div class="series" style="animation-delay:.05s">
+    <div class="series-header">
+      <span class="series-title">Detroit Pistons vs Cleveland Cavaliers</span>
+      <span class="series-round">Semifinal Este · Serie 1</span>
+    </div>
+    <div class="series-body">
+      <!-- PISTONS -->
+      <div class="team-block det">
+        <div class="team-name"><span class="seed-badge">#1</span> Detroit Pistons</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1630595.png" alt="Cade Cunningham" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1630595.png';this.onerror=null"></div>
+            <div class="player-name">Cade Cunningham</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1629130.png" alt="Duncan Robinson" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1629130.png';this.onerror=null"></div>
+            <div class="player-name">Duncan Robinson</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1641709.png" alt="Ausar Thompson" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1641709.png';this.onerror=null"></div>
+            <div class="player-name">Ausar Thompson</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/202699.png" alt="Tobias Harris" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/202699.png';this.onerror=null"></div>
+            <div class="player-name">Tobias Harris</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1631463.png" alt="Jalen Duren" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1631463.png';this.onerror=null"></div>
+            <div class="player-name">Jalen Duren</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAVALIERS -->
+      <div class="team-block cle">
+        <div class="team-name"><span class="seed-badge">#8</span> Cleveland Cavaliers</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/201935.png" alt="James Harden" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/201935.png';this.onerror=null"></div>
+            <div class="player-name">James Harden</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628378.png" alt="Donovan Mitchell" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628378.png';this.onerror=null"></div>
+            <div class="player-name">Donovan Mitchell</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1629622.png" alt="Max Strus" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1629622.png';this.onerror=null"></div>
+            <div class="player-name">Max Strus</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1630596.png" alt="Evan Mobley" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1630596.png';this.onerror=null"></div>
+            <div class="player-name">Evan Mobley</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628386.png" alt="Jarrett Allen" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628386.png';this.onerror=null"></div>
+            <div class="player-name">Jarrett Allen</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Series 2: Knicks vs 76ers -->
+  <div class="series" style="animation-delay:.1s">
+    <div class="series-header">
+      <span class="series-title">New York Knicks vs Philadelphia 76ers</span>
+      <span class="series-round">Semifinal Este · Serie 2</span>
+    </div>
+    <div class="series-body">
+      <!-- KNICKS -->
+      <div class="team-block nyk">
+        <div class="team-name"><span class="seed-badge">#2</span> New York Knicks</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628973.png" alt="Jalen Brunson" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628973.png';this.onerror=null"></div>
+            <div class="player-name">Jalen Brunson</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628969.png" alt="Mikal Bridges" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628969.png';this.onerror=null"></div>
+            <div class="player-name">Mikal Bridges</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628384.png" alt="OG Anunoby" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628384.png';this.onerror=null"></div>
+            <div class="player-name">OG Anunoby</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1626157.png" alt="Karl-Anthony Towns" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1626157.png';this.onerror=null"></div>
+            <div class="player-name">Karl-Anthony Towns</div>
+            <div class="player-pos">PF/C</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1629023.png" alt="Mitchell Robinson" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1629023.png';this.onerror=null"></div>
+            <div class="player-name">Mitchell Robinson</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 76ERS -->
+      <div class="team-block phi">
+        <div class="team-name"><span class="seed-badge">#7</span> Philadelphia 76ers</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1630178.png" alt="Tyrese Maxey" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1630178.png';this.onerror=null"></div>
+            <div class="player-name">Tyrese Maxey</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1642845.png" alt="VJ Edgecombe" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1642845.png';this.onerror=null"></div>
+            <div class="player-name">VJ Edgecombe</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/202331.png" alt="Paul George" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/202331.png';this.onerror=null"></div>
+            <div class="player-name">Paul George</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/203585.png" alt="Andre Drummond" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/203585.png';this.onerror=null"></div>
+            <div class="player-name">Andre Drummond</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/203954.png" alt="Joel Embiid" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/203954.png';this.onerror=null"></div>
+            <div class="player-name">Joel Embiid</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       CONFERENCIA OESTE
+  ═══════════════════════════════════════ -->
+  <div class="conf-title">🏆 Conferencia Oeste — Semifinales</div>
+
+  <!-- Series 3: Thunder vs Lakers -->
+  <div class="series" style="animation-delay:.15s">
+    <div class="series-header">
+      <span class="series-title">Oklahoma City Thunder vs Los Angeles Lakers</span>
+      <span class="series-round">Semifinal Oeste · Serie 1</span>
+    </div>
+    <div class="series-body">
+      <!-- THUNDER -->
+      <div class="team-block okc">
+        <div class="team-name"><span class="seed-badge">#1</span> Oklahoma City Thunder</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628983.png" alt="Shai Gilgeous-Alexander" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628983.png';this.onerror=null"></div>
+            <div class="player-name">Shai Gilgeous-Alexander</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1629652.png" alt="Luguentz Dort" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1629652.png';this.onerror=null"></div>
+            <div class="player-name">Luguentz Dort</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1631114.png" alt="Jalen Williams" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1631114.png';this.onerror=null"></div>
+            <div class="player-name">Jalen Williams</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1631096.png" alt="Chet Holmgren" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1631096.png';this.onerror=null"></div>
+            <div class="player-name">Chet Holmgren</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628392.png" alt="Isaiah Hartenstein" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628392.png';this.onerror=null"></div>
+            <div class="player-name">Isaiah Hartenstein</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAKERS -->
+      <div class="team-block lal">
+        <div class="team-name"><span class="seed-badge">#8</span> Los Angeles Lakers</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1626156.png" alt="D'Angelo Russell" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1626156.png';this.onerror=null"></div>
+            <div class="player-name">D'Angelo Russell</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1630559.png" alt="Austin Reaves" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1630559.png';this.onerror=null"></div>
+            <div class="player-name">Austin Reaves</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/2544.png" alt="LeBron James" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/2544.png';this.onerror=null"></div>
+            <div class="player-name">LeBron James</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1629060.png" alt="Rui Hachimura" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1629060.png';this.onerror=null"></div>
+            <div class="player-name">Rui Hachimura</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/203076.png" alt="Anthony Davis" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/203076.png';this.onerror=null"></div>
+            <div class="player-name">Anthony Davis</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Series 4: Spurs vs Timberwolves -->
+  <div class="series" style="animation-delay:.2s">
+    <div class="series-header">
+      <span class="series-title">San Antonio Spurs vs Minnesota Timberwolves</span>
+      <span class="series-round">Semifinal Oeste · Serie 2</span>
+    </div>
+    <div class="series-body">
+      <!-- SPURS -->
+      <div class="team-block sas">
+        <div class="team-name"><span class="seed-badge">#2</span> San Antonio Spurs</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1628368.png" alt="De'Aaron Fox" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1628368.png';this.onerror=null"></div>
+            <div class="player-name">De'Aaron Fox</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1642264.png" alt="Stephon Castle" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1642264.png';this.onerror=null"></div>
+            <div class="player-name">Stephon Castle</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1630170.png" alt="Devin Vassell" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1630170.png';this.onerror=null"></div>
+            <div class="player-name">Devin Vassell</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1631234.png" alt="Julian Champagnie" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1631234.png';this.onerror=null"></div>
+            <div class="player-name">Julian Champagnie</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1641705.png" alt="Victor Wembanyama" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1641705.png';this.onerror=null"></div>
+            <div class="player-name">Victor Wembanyama</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMBERWOLVES -->
+      <div class="team-block min">
+        <div class="team-name"><span class="seed-badge">#3</span> Minnesota Timberwolves</div>
+        <div class="players-row">
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/200765.png" alt="Mike Conley" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/200765.png';this.onerror=null"></div>
+            <div class="player-name">Mike Conley</div>
+            <div class="player-pos">PG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1641844.png" alt="Terrence Shannon Jr." onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1641844.png';this.onerror=null"></div>
+            <div class="player-name">Terrence Shannon Jr.</div>
+            <div class="player-pos">SG</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/1630531.png" alt="Jaden McDaniels" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/1630531.png';this.onerror=null"></div>
+            <div class="player-name">Jaden McDaniels</div>
+            <div class="player-pos">SF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/203944.png" alt="Julius Randle" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/203944.png';this.onerror=null"></div>
+            <div class="player-name">Julius Randle</div>
+            <div class="player-pos">PF</div>
+          </div>
+          <div class="player-card">
+            <div class="player-img-wrap"><img src="https://cdn.nba.com/headshots/nba/latest/1040x760/203497.png" alt="Rudy Gobert" onerror="this.src='https://cdn.nba.com/headshots/nba/latest/260x190/203497.png';this.onerror=null"></div>
+            <div class="player-name">Rudy Gobert</div>
+            <div class="player-pos">C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    Imágenes vía <span>cdn.nba.com</span> · IDs oficiales NBA · 8 equipos · 40 jugadores titulares<br>
+    Semifinales de Conferencia 2026 — en curso
+  </div>
+
+</div>
+</body>
+</html>
