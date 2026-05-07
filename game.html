@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Mexicanos Dijeron</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Barlow+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rojo:     #C8102E;
+  --verde:    #006847;
+  --amarillo: #FFD700;
+  --azul:     #00205B;
+  --negro:    #0a0a12;
+  --gris:     #16161e;
+  --gris2:    #22222c;
+  --gris3:    #2e2e3a;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; min-height:100%;
+  background: var(--negro) !important;
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+}
+
+/* ══ LOGIN ══ */
+#sLogin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 30px 20px;
+  text-align: center;
+}
+.login-logo { margin-bottom: 32px; }
+.login-logo .big {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(52px, 12vw, 90px); line-height: .88;
+  color: #fff; text-shadow: 4px 4px 0 var(--rojo);
+}
+.login-logo .sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; letter-spacing: 5px;
+  color: rgba(255,255,255,.35); text-transform: uppercase; margin-top: 6px;
+}
+.login-box {
+  width: 100%; max-width: 400px;
+  background: var(--gris); border: 2px solid var(--gris3);
+  border-radius: 16px; padding: 32px 28px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.login-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 28px; letter-spacing: 3px; color: var(--amarillo); margin-bottom: 4px;
+}
+.login-tab-row {
+  display: flex; background: var(--gris2);
+  border-radius: 8px; overflow: hidden; margin-bottom: 4px;
+}
+.login-tab {
+  flex: 1; padding: 10px; background: transparent; border: none;
+  font-family: 'Bebas Neue', cursive; font-size: 18px; letter-spacing: 2px;
+  color: rgba(255,255,255,.35); cursor: pointer; transition: all .2s;
+}
+.login-tab.active { background: var(--azul); color: var(--amarillo); }
+.login-inp {
+  width: 100%; background: var(--gris2); border: 2px solid var(--gris3);
+  border-radius: 8px; padding: 12px 16px;
+  font-family: 'Oswald', sans-serif; font-size: 16px; color: #fff;
+  outline: none; transition: border-color .2s;
+}
+.login-inp:focus { border-color: var(--amarillo); }
+.login-inp::placeholder { color: rgba(255,255,255,.25); }
+.login-err {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 14px; letter-spacing: 2px;
+  color: var(--rojo); text-transform: uppercase; min-height: 20px; text-align: center;
+}
+.btn-login {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--rojo), #7a0018);
+  border: none; border-radius: 8px;
+  font-family: 'Bebas Neue', cursive; font-size: 22px; letter-spacing: 3px; color: #fff;
+  cursor: pointer; transition: all .18s; box-shadow: 0 4px 18px rgba(200,16,46,.4);
+}
+.btn-login:hover { transform: translateY(-2px); }
+.btn-login:active { transform: scale(.97); }
+.user-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--gris2); border: 2px solid var(--gris3);
+  border-radius: 10px; padding: 10px 16px; margin-bottom: 20px;
+}
+.user-name {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 15px; letter-spacing: 3px;
+  color: rgba(255,255,255,.5); text-transform: uppercase;
+}
+.user-name em { color: var(--amarillo); font-style: normal; font-weight: 700; }
+.btn-logout {
+  background: transparent; border: 2px solid var(--gris3);
+  border-radius: 6px; padding: 5px 12px;
+  font-family: 'Bebas Neue', cursive; font-size: 15px; letter-spacing: 2px;
+  color: rgba(255,255,255,.35); cursor: pointer; transition: all .2s;
+}
+.btn-logout:hover { border-color: var(--rojo); color: var(--rojo); }
+.btn-save {
+  width: 100%; margin-top: 10px; padding: 14px;
+  background: linear-gradient(135deg, var(--azul), #001545);
+  border: 2px solid var(--amarillo); border-radius: 10px;
+  font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: 3px; color: var(--amarillo);
+  cursor: pointer; transition: all .18s;
+}
+.btn-save:hover { background: var(--azul); }
+.btn-save:active { transform: scale(.97); }
+.save-msg {
+  text-align: center; font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--verde); min-height: 18px;
+}
+
+/* ══ EDITOR ══ */
+#sEditor {
+  display: block;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 18px 80px;
+}
+
+#sGame {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--negro);
+  flex-direction: column;
+  padding: clamp(10px,1.5vh,20px) clamp(12px,2vw,36px);
+  gap: clamp(5px,.9vh,12px);
+  overflow: hidden;
+}
+
+#sGame::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 10% 50%, rgba(200,16,46,.15) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 55% at 90% 50%, rgba(0,104,71,.15) 0%, transparent 65%);
+}
+#sGame > * { position:relative; z-index:1; }
+
+.editor-logo { text-align:center; margin-bottom:28px; }
+.editor-logo .big {
+  font-family:'Bebas Neue',cursive;
+  font-size:52px; line-height:.9; color:#fff;
+  text-shadow:3px 3px 0 var(--rojo);
+}
+.editor-logo .sub {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px; letter-spacing:5px;
+  color:rgba(255,255,255,.35); text-transform:uppercase;
+}
+.tribar { display:flex; height:4px; width:200px; margin:10px auto; border-radius:2px; overflow:hidden; }
+.tribar span { flex:1; }
+.tribar span:nth-child(1){ background:var(--verde); }
+.tribar span:nth-child(2){ background:#fff; }
+.tribar span:nth-child(3){ background:var(--rojo); }
+
+.q-card {
+  background:var(--gris); border:2px solid var(--gris3);
+  border-radius:14px; padding:22px 20px; margin-bottom:16px;
+}
+.q-card-header {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;
+}
+.q-num-badge {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px; letter-spacing:4px; text-transform:uppercase;
+  color:var(--amarillo); background:var(--azul);
+  padding:4px 10px; border-radius:4px;
+}
+.btn-del-q { background:none; border:none; color:rgba(255,255,255,.25); font-size:20px; cursor:pointer; transition:color .2s; }
+.btn-del-q:hover { color:var(--rojo); }
+
+.inp-pregunta {
+  width:100%; background:var(--gris2); border:2px solid var(--gris3);
+  border-radius:8px; padding:12px 14px;
+  font-family:'Oswald',sans-serif; font-size:17px; color:#fff;
+  outline:none; resize:none; min-height:56px; transition:border-color .2s;
+}
+.inp-pregunta:focus { border-color:var(--amarillo); }
+.inp-pregunta::placeholder { color:rgba(255,255,255,.25); }
+
+.resp-list { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+.resp-row  { display:flex; align-items:center; gap:8px; }
+.resp-num {
+  font-family:'Bebas Neue',cursive; font-size:20px; color:var(--amarillo);
+  background:var(--azul); width:34px; min-width:34px; height:40px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:6px; flex-shrink:0;
+}
+.inp-resp {
+  flex:1; background:var(--gris2); border:2px solid var(--gris3);
+  border-radius:7px; padding:9px 12px;
+  font-family:'Oswald',sans-serif; font-size:15px; color:#fff;
+  outline:none; transition:border-color .2s;
+}
+.inp-resp:focus { border-color:rgba(255,255,255,.4); }
+.inp-resp::placeholder { color:rgba(255,255,255,.2); }
+.inp-pts {
+  width:62px; min-width:62px; background:var(--gris2); border:2px solid var(--gris3);
+  border-radius:7px; padding:9px 8px;
+  font-family:'Bebas Neue',cursive; font-size:18px; color:var(--amarillo);
+  text-align:center; outline:none; transition:border-color .2s;
+  -moz-appearance:textfield;
+}
+.inp-pts::-webkit-inner-spin-button,
+.inp-pts::-webkit-outer-spin-button { -webkit-appearance:none; }
+.inp-pts:focus { border-color:var(--amarillo); }
+.pts-lbl {
+  font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:2px;
+  color:rgba(255,255,255,.3); text-transform:uppercase;
+  text-align:right; min-width:62px; margin-top:-4px;
+}
+
+.btn-add-q {
+  width:100%; margin-top:8px; padding:14px;
+  background:transparent; border:2px dashed var(--gris3);
+  border-radius:12px; font-family:'Bebas Neue',cursive;
+  font-size:20px; letter-spacing:3px; color:rgba(255,255,255,.3);
+  cursor:pointer; transition:all .2s;
+}
+.btn-add-q:hover { border-color:var(--amarillo); color:var(--amarillo); }
+.btn-play {
+  width:100%; margin-top:20px; padding:18px;
+  background:linear-gradient(135deg,var(--rojo),#7a0018);
+  border:none; border-radius:10px;
+  font-family:'Bebas Neue',cursive; font-size:26px; letter-spacing:4px; color:#fff;
+  cursor:pointer; box-shadow:0 5px 24px rgba(200,16,46,.45); transition:all .18s;
+}
+.btn-play:hover { transform:translateY(-2px); }
+.btn-play:active { transform:scale(.97); }
+.editor-note {
+  text-align:center; margin-top:12px;
+  font-family:'Barlow Condensed',sans-serif; font-size:13px; letter-spacing:2px;
+  color:rgba(255,255,255,.22);
+}
+
+.g-top { display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.g-logo { font-family:'Bebas Neue',cursive; font-size:clamp(20px,2.8vw,36px); letter-spacing:3px; line-height:1; }
+.g-logo em { color:var(--amarillo); font-style:normal; }
+.g-qinfo {
+  font-family:'Barlow Condensed',sans-serif; font-size:clamp(12px,1.4vw,18px);
+  letter-spacing:4px; color:rgba(255,255,255,.35); text-transform:uppercase;
+}
+.btn-back {
+  background:transparent; border:2px solid var(--gris3); border-radius:7px; padding:6px 14px;
+  font-family:'Bebas Neue',cursive; font-size:clamp(14px,1.6vw,20px); letter-spacing:2px;
+  color:rgba(255,255,255,.35); cursor:pointer; transition:all .2s; flex-shrink:0;
+}
+.btn-back:hover { border-color:#fff; color:#fff; }
+
+.prog-wrap { height:4px; background:#2a2a2a; border-radius:2px; overflow:hidden; flex-shrink:0; }
+.prog-fill {
+  height:100%; border-radius:2px;
+  background:linear-gradient(90deg,var(--verde),var(--amarillo),var(--rojo));
+  transition:width .6s ease;
+}
+
+.q-titulo {
+  flex-shrink: 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(18px, 3vw, 42px);
+  font-weight: 700; line-height: 1.25;
+  text-align: center;
+  color: #fff;
+  padding: clamp(8px,1.2vh,16px) 0;
+}
+
+.board { flex:1; display:flex; flex-direction:column; gap:clamp(5px,.7vh,9px); overflow:hidden; }
+.a-row {
+  flex:1; display:flex; align-items:center;
+  background:var(--gris2); border:2.5px solid #333;
+  border-radius:9px; overflow:hidden; min-height:0;
+  cursor: pointer;
+}
+.a-row.revealed { cursor: default; }
+.a-row.revealed { border-color:var(--amarillo); animation:rowIn .45s cubic-bezier(.34,1.56,.64,1); }
+.a-row.wrong    { border-color:var(--rojo); animation:rowShake .4s ease; }
+@keyframes rowIn {
+  0%{transform:scaleX(.94);opacity:.4} 60%{transform:scaleX(1.02)} 100%{transform:scaleX(1);opacity:1}
+}
+@keyframes rowShake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)}
+  60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
+.a-num {
+  width:clamp(42px,5.5vw,68px); min-width:clamp(42px,5.5vw,68px); height:100%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--azul); font-family:'Bebas Neue',cursive;
+  font-size:clamp(18px,2.6vw,34px); color:var(--amarillo);
+  border-right:2px solid #333; flex-shrink:0; transition:background .3s;
+}
+.a-row.revealed .a-num { background:var(--rojo); border-color:var(--rojo); }
+.a-row.wrong    .a-num { background:#444; border-color:#444; }
+.a-body {
+  flex:1; padding:0 clamp(10px,1.8vw,24px);
+  display:flex; align-items:center; height:100%; position:relative; overflow:hidden;
+}
+.a-fill {
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,rgba(255,215,0,.1),transparent);
+  width:0; transition:width .9s ease .15s; pointer-events:none;
+}
+.a-row.revealed .a-fill { width:var(--fw); }
+.a-dots { display:flex; gap:clamp(5px,.7vw,9px); align-items:center; }
+.a-qmark {
+  font-family:'Bebas Neue',cursive;
+  font-size:clamp(22px,3vw,42px);
+  color:#555;
+  animation:qPulse 1.4s ease-in-out infinite;
+  line-height:1;
+}
+.a-qmark:nth-child(2){animation-delay:.2s}
+.a-qmark:nth-child(3){animation-delay:.4s}
+@keyframes qPulse {
+  0%,100%{opacity:.25;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.2)}
+}
+.a-text {
+  display:none; font-family:'Oswald',sans-serif; font-size:clamp(14px,2.3vw,30px);
+  font-weight:700; letter-spacing:1px; color:#fff; text-transform:uppercase; position:relative; z-index:2;
+}
+.a-row.revealed .a-dots { display:none; }
+.a-row.revealed .a-text { display:block; }
+.a-pts {
+  min-width:clamp(52px,5.5vw,82px); padding-right:clamp(10px,1.5vw,20px);
+  text-align:right; font-family:'Bebas Neue',cursive; font-size:clamp(20px,3vw,42px);
+  color:transparent; flex-shrink:0; transition:color .4s ease .3s;
+}
+.a-row.revealed .a-pts { color:var(--amarillo); }
+
+.timer-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px,2vw,24px);
+}
+
+.timer-ring {
+  position: relative;
+  width: clamp(64px,9vw,100px);
+  height: clamp(64px,9vw,100px);
+  flex-shrink: 0;
+}
+
+.timer-ring svg {
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-track {
+  fill: none;
+  stroke: #2a2a3a;
+  stroke-width: 10;
+}
+
+.timer-bar {
+  fill: none;
+  stroke: var(--amarillo);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 327;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke .3s;
+}
+
+.timer-bar.danger { stroke: var(--rojo); }
+
+.timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(22px,3.5vw,40px);
+  color: var(--amarillo);
+  transition: color .3s;
+}
+.timer-num.danger { color: var(--rojo); }
+
+.btn-timer-start {
+  padding: clamp(10px,1.4vh,16px) clamp(18px,2.5vw,32px);
+  background: linear-gradient(135deg, var(--azul), #001545);
+  border: 2.5px solid var(--amarillo);
+  border-radius: 10px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(16px,2vw,26px);
+  letter-spacing: 3px; color: var(--amarillo);
+  cursor: pointer; transition: all .15s;
+}
+.btn-timer-start:hover { background: var(--azul); transform: scale(1.03); }
+.btn-timer-start:active { transform: scale(.96); }
+.btn-timer-start.running {
+  border-color: var(--rojo); color: var(--rojo);
+  background: rgba(200,16,46,.1);
+}
+
+@keyframes timesUp {
+  0%,100% { transform: scale(1); }
+  20%     { transform: scale(1.08); }
+  40%     { transform: scale(.95); }
+  60%     { transform: scale(1.05); }
+  80%     { transform: scale(.98); }
+}
+
+.btn-fail {
+  flex-shrink: 0;
+  width: 100%;
+  padding: clamp(10px,1.6vh,18px);
+  background: linear-gradient(135deg, #8b0000, var(--rojo));
+  border: none; border-radius: 12px;
+  font-size: clamp(28px,4vw,52px);
+  cursor: pointer;
+  box-shadow: 0 5px 24px rgba(200,16,46,.45);
+  transition: all .15s ease;
+}
+.btn-fail:hover { transform: scale(1.03); box-shadow: 0 8px 32px rgba(200,16,46,.65); }
+.btn-fail:active { transform: scale(.96); }
+
+.q-nav { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.btn-qnav {
+  background:var(--gris2); border:2px solid var(--gris3); border-radius:8px; padding:8px 20px;
+  font-family:'Bebas Neue',cursive; font-size:clamp(16px,1.8vw,24px); letter-spacing:2px;
+  color:rgba(255,255,255,.5); cursor:pointer; transition:all .2s; flex-shrink:0;
+}
+.btn-qnav:hover:not(:disabled) { border-color:var(--amarillo); color:var(--amarillo); }
+.btn-qnav:disabled { opacity:.2; cursor:default; }
+
+.emoji-overlay {
+  position:fixed; inset:0; z-index:99;
+  display:flex; align-items:center; justify-content:center; pointer-events:none;
+}
+.emoji-overlay .big-emoji {
+  font-size:clamp(140px,30vw,280px); line-height:1;
+  filter:drop-shadow(0 0 50px rgba(0,0,0,.5));
+  animation:emojiBounce .5s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes emojiBounce {
+  0%  {transform:scale(0) rotate(-15deg);opacity:0}
+  60% {transform:scale(1.18) rotate(5deg);opacity:1}
+  80% {transform:scale(.96) rotate(-2deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}
+}
+.emoji-overlay.fade-out .big-emoji { animation:emojiFade .3s ease forwards; }
+@keyframes emojiFade { from{opacity:1;transform:scale(1)} to{opacity:0;transform:scale(1.3)} }
+
+.flash-x  { position:fixed;inset:0;z-index:50;background:rgba(200,16,46,.25);pointer-events:none;opacity:0;animation:flashAnim .5s ease forwards; }
+.flash-ok { position:fixed;inset:0;z-index:50;background:rgba(0,104,71,.25);pointer-events:none;opacity:0;animation:flashAnim .5s ease forwards; }
+@keyframes flashAnim { 0%{opacity:1}100%{opacity:0} }
+
+#oEnd {
+  display:none; position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,.9);
+  flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:30px 20px;
+}
+#oEnd.show { display:flex; }
+.end-emoji { font-size:clamp(55px,9vw,100px); margin-bottom:14px; animation:floatBig 2s ease-in-out infinite alternate; }
+@keyframes floatBig { from{transform:translateY(0)} to{transform:translateY(-16px)} }
+.end-title {
+  font-family:'Bebas Neue',cursive; font-size:clamp(60px,14vw,130px); line-height:.95;
+  color:var(--amarillo); animation:glow 1.2s ease-in-out infinite alternate;
+}
+@keyframes glow { from{text-shadow:0 0 20px var(--amarillo)} to{text-shadow:0 0 80px var(--amarillo),0 0 120px var(--amarillo)} }
+.end-sub { font-family:'Oswald',sans-serif; font-size:clamp(16px,2.5vw,26px); color:rgba(255,255,255,.6); margin:12px 0 28px; max-width:480px; line-height:1.35; }
+.btn-restart {
+  padding:16px 52px; background:linear-gradient(135deg,var(--rojo),#7a0018);
+  border:none; border-radius:10px; font-family:'Bebas Neue',cursive;
+  font-size:clamp(20px,2.5vw,30px); letter-spacing:4px; color:#fff;
+  cursor:pointer; box-shadow:0 5px 24px rgba(200,16,46,.5); transition:all .18s;
+}
+.btn-restart:hover { transform:translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div id="sLogin">
+  <div class="login-logo">
+    <div class="big">100 MX</div>
+    <div class="tribar"><span></span><span></span><span></span></div>
+    <div class="sub">Inicia sesión para continuar</div>
+  </div>
+  <div class="login-box">
+    <div class="login-title" id="loginTitle">INICIAR SESIÓN</div>
+    <div class="login-tab-row">
+      <button class="login-tab active" id="tabLogin"    onclick="switchTab('login')">ENTRAR</button>
+      <button class="login-tab"        id="tabRegister" onclick="switchTab('register')">REGISTRO</button>
+    </div>
+    <input class="login-inp" id="loginUser" type="text"     placeholder="Usuario" autocomplete="off" />
+    <input class="login-inp" id="loginPass" type="password" placeholder="Contraseña" />
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn-login" onclick="doLogin()">ENTRAR</button>
+  </div>
+</div>
+
+<div id="sEditor">
+  <div class="editor-logo">
+    <div class="big">100 Mexicanos Dijeron</div>
+    <div class="tribar"><span></span><span></span><span></span></div>
+    <div class="sub">Arma tu encuesta 🎙️</div>
+  </div>
+  <div class="user-bar">
+    <div class="user-name">Hola, <em id="userLabel">—</em></div>
+    <button class="btn-logout" onclick="doLogout()">CERRAR SESIÓN</button>
+  </div>
+  <div id="qList"></div>
+  <button class="btn-add-q" onclick="addQuestion()">+ AGREGAR PREGUNTA</button>
+  <button class="btn-save"  onclick="saveQuestions()">💾 &nbsp;GUARDAR PREGUNTAS</button>
+  <div class="save-msg" id="saveMsg"></div>
+  <button class="btn-play"  onclick="startPresentation()">▶ &nbsp;PRESENTAR</button>
+  <div class="editor-note">Llena al menos una pregunta con sus respuestas para comenzar</div>
+</div>
+
+<div id="sGame">
+  <div class="g-top">
+    <div class="g-logo">100 <em>MX</em></div>
+    <div class="g-qinfo" id="gQInfo">Pregunta 1 / 1</div>
+    <button class="btn-back" onclick="goBack()">← EDITAR</button>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-fill" id="progFill" style="width:0%"></div>
+  </div>
+  <div class="q-titulo" id="gQText"></div>
+  <div class="board" id="gBoard"></div>
+  <div class="timer-wrap">
+    <div class="timer-ring">
+      <svg viewBox="0 0 120 120">
+        <circle class="timer-track" cx="60" cy="60" r="52"/>
+        <circle class="timer-bar" id="timerBar" cx="60" cy="60" r="52"/>
+      </svg>
+      <div class="timer-num" id="timerNum">15</div>
+    </div>
+    <button class="btn-timer-start" id="btnTimerStart" onclick="startTimer()">▶ INICIAR</button>
+  </div>
+  <button class="btn-fail" onclick="doFail()">❌</button>
+  <div class="q-nav">
+    <button class="btn-qnav" id="btnPrev" onclick="prevQ()">◀ ANTERIOR</button>
+    <button class="btn-qnav" id="btnNext" onclick="nextQ()">SIGUIENTE ▶</button>
+  </div>
+</div>
+
+<div id="oEnd">
+  <div class="end-emoji">🇲🇽</div>
+  <div class="end-title">¡FIN!</div>
+  <div class="end-sub">Se acabaron todas las preguntas. ¡Gracias por jugar!</div>
+  <button class="btn-restart" onclick="goBack()">VOLVER AL EDITOR</button>
+</div>
+
+<script>
+let qs = [];
+let cq = 0;
+let currentUser = null;
+let loginMode = 'login';
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sEditor').style.display = 'none';
+  const saved = localStorage.getItem('100mx_session');
+  if (saved) { currentUser = saved; enterEditor(); }
+});
+
+function hashPass(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return h.toString(36);
+}
+
+function switchTab(mode) {
+  loginMode = mode;
+  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+  document.getElementById('loginTitle').textContent = mode === 'login' ? 'INICIAR SESIÓN' : 'CREAR CUENTA';
+  document.querySelector('.btn-login').textContent  = mode === 'login' ? 'ENTRAR' : 'REGISTRARSE';
+  document.getElementById('loginErr').textContent  = '';
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err  = document.getElementById('loginErr');
+  if (!user || !pass) { err.textContent = 'Llena todos los campos'; return; }
+  if (user.length < 3) { err.textContent = 'Usuario muy corto (mín 3 letras)'; return; }
+  if (pass.length < 4) { err.textContent = 'Contraseña muy corta (mín 4 caracteres)'; return; }
+  const users = JSON.parse(localStorage.getItem('100mx_users') || '{}');
+  if (loginMode === 'register') {
+    if (users[user]) { err.textContent = 'Ese usuario ya existe'; return; }
+    users[user] = { pass: hashPass(pass), preguntas: [] };
+    localStorage.setItem('100mx_users', JSON.stringify(users));
+    err.style.color = 'var(--verde)';
+    err.textContent = '¡Cuenta creada! Entrando…';
+    setTimeout(() => { err.style.color = ''; currentUser = user; finishLogin(); }, 900);
+  } else {
+    if (!users[user]) { err.textContent = 'Usuario no encontrado'; return; }
+    if (users[user].pass !== hashPass(pass)) { err.textContent = 'Contraseña incorrecta'; return; }
+    currentUser = user;
+    finishLogin();
+  }
+}
+
+function finishLogin() {
+  localStorage.setItem('100mx_session', currentUser);
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').textContent = '';
+  enterEditor();
+}
+
+function doLogout() {
+  localStorage.removeItem('100mx_session');
+  currentUser = null; qs = [];
+  document.getElementById('sEditor').style.display = 'none';
+  document.getElementById('sLogin').style.display  = 'flex';
+}
+
+function enterEditor() {
+  document.getElementById('sLogin').style.display  = 'none';
+  document.getElementById('sEditor').style.display = 'block';
+  document.getElementById('userLabel').textContent  = currentUser;
+  loadUserQuestions();
+}
+
+function saveQuestions() {
+  const users = JSON.parse(localStorage.getItem('100mx_users') || '{}');
+  if (!users[currentUser]) return;
+  users[currentUser].preguntas = qs;
+  localStorage.setItem('100mx_users', JSON.stringify(users));
+  const msg = document.getElementById('saveMsg');
+  msg.textContent = '✓ Guardado correctamente';
+  setTimeout(() => { msg.textContent = ''; }, 2500);
+}
+
+function loadUserQuestions() {
+  const users = JSON.parse(localStorage.getItem('100mx_users') || '{}');
+  const data  = users[currentUser]?.preguntas;
+  if (data && data.length > 0) { qs = data; } else {
+    qs = [{ id: Date.now(), pregunta:'', respuestas: Array(6).fill(null).map(()=>({texto:'',puntos:''})) }];
+  }
+  renderEditor();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addQuestion() {
+  qs.push({ id: Date.now(), pregunta:'', respuestas: Array(6).fill(null).map(()=>({texto:'',puntos:''})) });
+  renderEditor();
+}
+
+function removeQuestion(id) {
+  if (qs.length === 1) return;
+  qs = qs.filter(q => q.id !== id);
+  renderEditor();
+}
+
+function renderEditor() {
+  const c = document.getElementById('qList');
+  c.innerHTML = '';
+  qs.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.innerHTML = `
+      <div class="q-card-header">
+        <span class="q-num-badge">PREGUNTA ${qi+1}</span>
+        <button class="btn-del-q" onclick="removeQuestion(${q.id})">✕</button>
+      </div>
+      <textarea class="inp-pregunta" rows="2"
+        placeholder="Escribe tu pregunta aquí…"
+        oninput="qs[${qi}].pregunta=this.value"
+      >${escHtml(q.pregunta)}</textarea>
+      <div class="resp-list">
+        ${q.respuestas.map((r,ri) => `
+          <div>
+            <div class="resp-row">
+              <div class="resp-num">${ri+1}</div>
+              <input class="inp-resp" type="text"
+                placeholder="Respuesta ${ri+1}"
+                value="${escHtml(r.texto)}"
+                oninput="qs[${qi}].respuestas[${ri}].texto=this.value"
+              />
+              <input class="inp-pts" type="number" min="1" max="99"
+                placeholder="pts"
+                value="${r.puntos}"
+                oninput="qs[${qi}].respuestas[${ri}].puntos=this.value"
+              />
+            </div>
+            <div class="pts-lbl">pts</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function startPresentation() {
+  const valid = qs.filter(q => q.pregunta.trim() !== '');
+  if (valid.length === 0) { alert('Escribe al menos una pregunta.'); return; }
+  window._pqs = valid.map(q => ({
+    pregunta: q.pregunta.trim(),
+    respuestas: q.respuestas
+      .filter(r => r.texto.trim() !== '')
+      .map(r => ({ texto: r.texto.trim(), puntos: parseInt(r.puntos)||0 }))
+  }));
+  cq = 0;
+  document.getElementById('sEditor').style.display = 'none';
+  document.getElementById('sGame').style.display   = 'flex';
+  loadQ();
+}
+
+function loadQ() {
+  stopTimer();
+  const pqs = window._pqs;
+  const q   = pqs[cq];
+  document.getElementById('gQInfo').textContent   = `Pregunta ${cq+1} / ${pqs.length}`;
+  document.getElementById('progFill').style.width  = `${(cq / pqs.length) * 100}%`;
+  document.getElementById('gQText').textContent    = q.pregunta;
+  document.getElementById('btnPrev').disabled      = (cq === 0);
+  document.getElementById('btnNext').disabled      = (cq === pqs.length - 1);
+  const board = document.getElementById('gBoard');
+  board.innerHTML = '';
+  const maxV = Math.max(...q.respuestas.map(r => r.puntos), 1);
+  q.respuestas.forEach((r, i) => {
+    const fw  = Math.round((r.puntos / maxV) * 86);
+    const row = document.createElement('div');
+    row.className = 'a-row';
+    row.id = `ar${i}`;
+    row.style.setProperty('--fw', fw + '%');
+    row.innerHTML = `
+      <div class="a-num">${i + 1}</div>
+      <div class="a-body">
+        <div class="a-fill"></div>
+        <div class="a-dots">
+          <span class="a-qmark">?</span>
+          <span class="a-qmark">?</span>
+          <span class="a-qmark">?</span>
+        </div>
+        <div class="a-text">${r.texto.toUpperCase()}${r.puntos ? ' — ' + r.puntos + ' PTS' : ''}</div>
+      </div>
+      <div class="a-pts">${r.puntos || ''}</div>
+    `;
+    row.addEventListener('click', () => {
+      if (row.classList.contains('revealed')) return;
+      row.classList.add('revealed');
+      flash('ok');
+    });
+    board.appendChild(row);
+  });
+}
+
+let timerInterval = null;
+let timerSeconds  = 15;
+const TIMER_TOTAL = 15;
+const CIRCUM      = 327;
+
+function startTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    resetTimerUI();
+    return;
+  }
+  timerSeconds = TIMER_TOTAL;
+  updateTimerUI(timerSeconds);
+  const btn = document.getElementById('btnTimerStart');
+  btn.textContent = '⏹ DETENER';
+  btn.classList.add('running');
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerUI(timerSeconds);
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timesUp();
+    }
+  }, 1000);
+}
+
+function updateTimerUI(secs) {
+  const bar = document.getElementById('timerBar');
+  const num = document.getElementById('timerNum');
+  if (!bar || !num) return;
+  const pct    = secs / TIMER_TOTAL;
+  const offset = CIRCUM * (1 - pct);
+  bar.style.strokeDashoffset = offset;
+  num.textContent = secs;
+  const danger = secs <= 5;
+  bar.classList.toggle('danger', danger);
+  num.classList.toggle('danger', danger);
+}
+
+function timesUp() {
+  flash('x');
+  const ring = document.querySelector('.timer-ring');
+  if (ring) { ring.style.animation = 'timesUp .6s ease'; setTimeout(() => ring.style.animation = '', 700); }
+  resetTimerUI();
+}
+
+function resetTimerUI() {
+  const btn = document.getElementById('btnTimerStart');
+  if (btn) { btn.textContent = '▶ INICIAR'; btn.classList.remove('running'); }
+  timerSeconds = TIMER_TOTAL;
+  updateTimerUI(TIMER_TOTAL);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  resetTimerUI();
+}
+
+function doFail() { flash('x'); }
+
+function flash(type) {
+  const bg = document.createElement('div');
+  bg.className = type === 'x' ? 'flash-x' : 'flash-ok';
+  document.body.appendChild(bg);
+  setTimeout(() => bg.remove(), 550);
+  const ov = document.createElement('div');
+  ov.className = 'emoji-overlay';
+  ov.innerHTML = `<span class="big-emoji">${type === 'x' ? '❌' : '✅'}</span>`;
+  document.body.appendChild(ov);
+  setTimeout(() => {
+    ov.classList.add('fade-out');
+    setTimeout(() => ov.remove(), 350);
+  }, 900);
+}
+
+function nextQ() {
+  if (cq >= window._pqs.length - 1) { document.getElementById('oEnd').classList.add('show'); return; }
+  cq++; loadQ();
+}
+function prevQ() { if (cq <= 0) return; cq--; loadQ(); }
+
+function goBack() {
+  window._pqs = null; cq = 0;
+  document.getElementById('oEnd').classList.remove('show');
+  document.getElementById('sGame').style.display   = 'none';
+  document.getElementById('sEditor').style.display = 'block';
+}
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('sGame').style.display === 'none') return;
+  if (e.code === 'ArrowLeft')  { e.preventDefault(); prevQ(); }
+  if (e.code === 'ArrowRight' || e.code === 'Enter') { e.preventDefault(); nextQ(); }
+});
+</script>
+</body>
+</html>
