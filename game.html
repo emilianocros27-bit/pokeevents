@@ -294,9 +294,9 @@ html, body {
 }
 
 .g-team-logo-wrap {
-  height: clamp(60px,9vh,96px);
-  width:  clamp(60px,9vh,96px);
-  border-radius: 10px;
+  height: clamp(80px,13vh,140px);
+  width:  clamp(80px,13vh,140px);
+  border-radius: 12px;
   overflow: hidden;
   background: rgba(255,255,255,.07);
   border: 2px solid rgba(255,215,0,.25);
@@ -634,7 +634,6 @@ html, body {
         <img id="gTeamLogo" class="g-team-logo-img" src="" alt="Logo" />
         <span class="g-logo-placeholder" id="gLogoPlaceholder">🏆</span>
       </div>
-      <div class="g-team-name" id="gTeamName">EQUIPO</div>
     </div>
     <div class="g-top-right">
       <div class="g-qinfo" id="gQInfo">Pregunta 1 / 1</div>
@@ -862,8 +861,6 @@ function loadTeamHeader() {
   const user  = users[currentUser];
   const teamName = user?.teamName || currentUser;
   const teamLogo = user?.teamLogo || '';
-
-  document.getElementById('gTeamName').textContent = teamName.toUpperCase();
 
   const img         = document.getElementById('gTeamLogo');
   const placeholder = document.getElementById('gLogoPlaceholder');
