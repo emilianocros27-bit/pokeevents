@@ -88,6 +88,28 @@ html, body {
 }
 .btn-login:hover { transform: translateY(-2px); }
 .btn-login:active { transform: scale(.97); }
+
+/* ── Campos extra registro ── */
+#registerExtra { display: none; flex-direction: column; gap: 14px; }
+
+.logo-upload-label { display: block; cursor: pointer; width: 100%; }
+
+#logoPreviewBox {
+  width: 100%; height: 110px;
+  background: var(--gris2); border: 2px dashed var(--gris3);
+  border-radius: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; overflow: hidden; transition: border-color .2s;
+}
+#logoPreviewBox:hover { border-color: var(--amarillo); }
+.logo-upload-hint {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+.logo-upload-icon { font-size: 28px; }
+#logoPreviewBox img { max-height: 100px; max-width: 100%; object-fit: contain; border-radius: 6px; }
+
 .user-bar {
   display: flex; align-items: center; justify-content: space-between;
   background: var(--gris2); border: 2px solid var(--gris3);
@@ -246,20 +268,78 @@ html, body {
   color:rgba(255,255,255,.22);
 }
 
-/* ── Presentación ── */
-.g-top { display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.g-logo { font-family:'Bebas Neue',cursive; font-size:clamp(20px,2.8vw,36px); letter-spacing:3px; line-height:1; }
-.g-logo em { color:var(--amarillo); font-style:normal; }
+/* ══ HEADER JUEGO ══ */
+.g-top {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, var(--azul), #001040);
+  border: 3px solid var(--amarillo);
+  border-radius: 14px;
+  padding: clamp(6px,1vh,12px) clamp(12px,2vw,20px);
+  gap: clamp(10px,1.5vw,20px);
+  flex-shrink: 0;
+  box-shadow: 0 6px 28px rgba(0,32,91,.55);
+}
+
+.g-team-area {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px,1.5vw,18px);
+  flex: 1;
+  min-width: 0;
+}
+
+.g-team-logo-wrap {
+  height: clamp(60px,9vh,96px);
+  width:  clamp(60px,9vh,96px);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,.07);
+  border: 2px solid rgba(255,215,0,.25);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.g-team-logo-img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: none;
+}
+
+.g-logo-placeholder {
+  font-size: clamp(28px,4.5vh,52px);
+}
+
+.g-team-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(22px,4vw,58px);
+  color: var(--amarillo);
+  letter-spacing: 4px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.5);
+}
+
+.g-top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .g-qinfo {
-  font-family:'Barlow Condensed',sans-serif; font-size:clamp(12px,1.4vw,18px);
-  letter-spacing:4px; color:rgba(255,255,255,.35); text-transform:uppercase;
+  font-family:'Barlow Condensed',sans-serif; font-size:clamp(11px,1.3vw,17px);
+  letter-spacing:4px; color:rgba(255,255,255,.45); text-transform:uppercase;
 }
 .btn-back {
-  background:transparent; border:2px solid var(--gris3); border-radius:7px; padding:6px 14px;
-  font-family:'Bebas Neue',cursive; font-size:clamp(14px,1.6vw,20px); letter-spacing:2px;
-  color:rgba(255,255,255,.35); cursor:pointer; transition:all .2s; flex-shrink:0;
+  background:transparent; border:2px solid rgba(255,215,0,.3); border-radius:7px; padding:5px 12px;
+  font-family:'Bebas Neue',cursive; font-size:clamp(13px,1.5vw,18px); letter-spacing:2px;
+  color:rgba(255,215,0,.5); cursor:pointer; transition:all .2s; flex-shrink:0;
 }
-.btn-back:hover { border-color:#fff; color:#fff; }
+.btn-back:hover { border-color:var(--amarillo); color:var(--amarillo); }
 
 .prog-wrap { height:4px; background:#2a2a2a; border-radius:2px; overflow:hidden; flex-shrink:0; }
 .prog-fill {
@@ -275,7 +355,7 @@ html, body {
   font-weight: 700; line-height: 1.25;
   text-align: center;
   color: #fff;
-  padding: clamp(8px,1.2vh,16px) 0;
+  padding: clamp(6px,1vh,14px) 0;
 }
 
 /* tablero */
@@ -363,11 +443,7 @@ html, body {
   transform: rotate(-90deg);
 }
 
-.timer-track {
-  fill: none;
-  stroke: #2a2a3a;
-  stroke-width: 10;
-}
+.timer-track { fill: none; stroke: #2a2a3a; stroke-width: 10; }
 
 .timer-bar {
   fill: none;
@@ -382,8 +458,7 @@ html, body {
 .timer-bar.danger { stroke: var(--rojo); }
 
 .timer-num {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Bebas Neue', cursive;
   font-size: clamp(22px,3.5vw,40px);
@@ -505,6 +580,19 @@ html, body {
     </div>
     <input class="login-inp" id="loginUser" type="text"     placeholder="Usuario" autocomplete="off" />
     <input class="login-inp" id="loginPass" type="password" placeholder="Contraseña" />
+
+    <!-- Solo se muestra en registro -->
+    <div id="registerExtra">
+      <input class="login-inp" id="loginTeam" type="text" placeholder="Nombre del equipo" autocomplete="off" />
+      <input type="file" id="loginLogo" accept="image/*" style="display:none" onchange="previewLogo(this)" />
+      <label for="loginLogo" class="logo-upload-label">
+        <div id="logoPreviewBox">
+          <span class="logo-upload-icon">📷</span>
+          <span class="logo-upload-hint">Subir logo del equipo</span>
+        </div>
+      </label>
+    </div>
+
     <div class="login-err" id="loginErr"></div>
     <button class="btn-login" onclick="doLogin()">ENTRAR</button>
   </div>
@@ -531,10 +619,20 @@ html, body {
 
 <!-- ══ PRESENTACIÓN ══ -->
 <div id="sGame">
+
+  <!-- HEADER CON LOGO Y NOMBRE DEL EQUIPO -->
   <div class="g-top">
-    <div class="g-logo">100 <em>MX</em></div>
-    <div class="g-qinfo" id="gQInfo">Pregunta 1 / 1</div>
-    <button class="btn-back" onclick="goBack()">← EDITAR</button>
+    <div class="g-team-area">
+      <div class="g-team-logo-wrap">
+        <img id="gTeamLogo" class="g-team-logo-img" src="" alt="Logo" />
+        <span class="g-logo-placeholder" id="gLogoPlaceholder">🏆</span>
+      </div>
+      <div class="g-team-name" id="gTeamName">EQUIPO</div>
+    </div>
+    <div class="g-top-right">
+      <div class="g-qinfo" id="gQInfo">Pregunta 1 / 1</div>
+      <button class="btn-back" onclick="goBack()">← EDITAR</button>
+    </div>
   </div>
 
   <div class="prog-wrap">
@@ -583,11 +681,20 @@ let loginMode = 'login';
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sEditor').style.display = 'none';
   const saved = localStorage.getItem('100mx_session');
-  if (saved) {
-    currentUser = saved;
-    enterEditor();
-  }
+  if (saved) { currentUser = saved; enterEditor(); }
 });
+
+/* ══ LOGO PREVIEW (registro) ══ */
+function previewLogo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const box = document.getElementById('logoPreviewBox');
+    box.innerHTML = `<img src="${e.target.result}" />`;
+  };
+  reader.readAsDataURL(file);
+}
 
 /* ══ LOGIN ══ */
 function hashPass(s) {
@@ -602,7 +709,8 @@ function switchTab(mode) {
   document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
   document.getElementById('loginTitle').textContent = mode === 'login' ? 'INICIAR SESIÓN' : 'CREAR CUENTA';
   document.querySelector('.btn-login').textContent  = mode === 'login' ? 'ENTRAR' : 'REGISTRARSE';
-  document.getElementById('loginErr').textContent  = '';
+  document.getElementById('loginErr').textContent   = '';
+  document.getElementById('registerExtra').style.display = mode === 'register' ? 'flex' : 'none';
 }
 
 function doLogin() {
@@ -618,11 +726,24 @@ function doLogin() {
 
   if (loginMode === 'register') {
     if (users[user]) { err.textContent = 'Ese usuario ya existe'; return; }
-    users[user] = { pass: hashPass(pass), preguntas: [] };
-    localStorage.setItem('100mx_users', JSON.stringify(users));
-    err.style.color = 'var(--verde)';
-    err.textContent = '¡Cuenta creada! Entrando…';
-    setTimeout(() => { err.style.color = ''; currentUser = user; finishLogin(); }, 900);
+    const teamName  = document.getElementById('loginTeam').value.trim() || user;
+    const logoInput = document.getElementById('loginLogo');
+
+    const saveAndContinue = (logoData) => {
+      users[user] = { pass: hashPass(pass), preguntas: [], teamName, teamLogo: logoData };
+      localStorage.setItem('100mx_users', JSON.stringify(users));
+      err.style.color = 'var(--verde)';
+      err.textContent = '¡Cuenta creada! Entrando…';
+      setTimeout(() => { err.style.color = ''; currentUser = user; finishLogin(); }, 900);
+    };
+
+    if (logoInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => saveAndContinue(e.target.result);
+      reader.readAsDataURL(logoInput.files[0]);
+    } else {
+      saveAndContinue('');
+    }
   } else {
     if (!users[user]) { err.textContent = 'Usuario no encontrado'; return; }
     if (users[user].pass !== hashPass(pass)) { err.textContent = 'Contraseña incorrecta'; return; }
@@ -641,8 +762,7 @@ function finishLogin() {
 
 function doLogout() {
   localStorage.removeItem('100mx_session');
-  currentUser = null;
-  qs = [];
+  currentUser = null; qs = [];
   document.getElementById('sEditor').style.display = 'none';
   document.getElementById('sLogin').style.display  = 'flex';
 }
@@ -660,7 +780,6 @@ function saveQuestions() {
   if (!users[currentUser]) return;
   users[currentUser].preguntas = qs;
   localStorage.setItem('100mx_users', JSON.stringify(users));
-
   const msg = document.getElementById('saveMsg');
   msg.textContent = '✓ Guardado correctamente';
   setTimeout(() => { msg.textContent = ''; }, 2500);
@@ -669,9 +788,7 @@ function saveQuestions() {
 function loadUserQuestions() {
   const users = JSON.parse(localStorage.getItem('100mx_users') || '{}');
   const data  = users[currentUser]?.preguntas;
-  if (data && data.length > 0) {
-    qs = data;
-  } else {
+  if (data && data.length > 0) { qs = data; } else {
     qs = [{ id: Date.now(), pregunta:'', respuestas: Array(6).fill(null).map(()=>({texto:'',puntos:''})) }];
   }
   renderEditor();
@@ -734,6 +851,26 @@ function renderEditor() {
 }
 
 /* ══ PRESENTACIÓN ══ */
+function loadTeamHeader() {
+  const users = JSON.parse(localStorage.getItem('100mx_users') || '{}');
+  const user  = users[currentUser];
+  const teamName = user?.teamName || currentUser;
+  const teamLogo = user?.teamLogo || '';
+
+  document.getElementById('gTeamName').textContent = teamName.toUpperCase();
+
+  const img         = document.getElementById('gTeamLogo');
+  const placeholder = document.getElementById('gLogoPlaceholder');
+  if (teamLogo) {
+    img.src = teamLogo;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+}
+
 function startPresentation() {
   const valid = qs.filter(q => q.pregunta.trim() !== '');
   if (valid.length === 0) { alert('Escribe al menos una pregunta.'); return; }
@@ -746,6 +883,7 @@ function startPresentation() {
   cq = 0;
   document.getElementById('sEditor').style.display = 'none';
   document.getElementById('sGame').style.display   = 'flex';
+  loadTeamHeader();
   loadQ();
 }
 
@@ -754,11 +892,11 @@ function loadQ() {
   const pqs = window._pqs;
   const q   = pqs[cq];
 
-  document.getElementById('gQInfo').textContent   = `Pregunta ${cq+1} / ${pqs.length}`;
-  document.getElementById('progFill').style.width  = `${(cq / pqs.length) * 100}%`;
-  document.getElementById('gQText').textContent    = q.pregunta;
-  document.getElementById('btnPrev').disabled      = (cq === 0);
-  document.getElementById('btnNext').disabled      = (cq === pqs.length - 1);
+  document.getElementById('gQInfo').textContent  = `Pregunta ${cq+1} / ${pqs.length}`;
+  document.getElementById('progFill').style.width = `${(cq / pqs.length) * 100}%`;
+  document.getElementById('gQText').textContent   = q.pregunta;
+  document.getElementById('btnPrev').disabled     = (cq === 0);
+  document.getElementById('btnNext').disabled     = (cq === pqs.length - 1);
 
   const board = document.getElementById('gBoard');
   board.innerHTML = '';
@@ -796,7 +934,7 @@ function loadQ() {
 let timerInterval = null;
 let timerSeconds  = 15;
 const TIMER_TOTAL = 15;
-const CIRCUM      = 327; // 2 * π * 52
+const CIRCUM      = 327;
 
 function startTimer() {
   if (timerInterval) {
@@ -826,12 +964,9 @@ function updateTimerUI(secs) {
   const bar = document.getElementById('timerBar');
   const num = document.getElementById('timerNum');
   if (!bar || !num) return;
-
-  const pct    = secs / TIMER_TOTAL;
-  const offset = CIRCUM * (1 - pct);
+  const offset = CIRCUM * (1 - secs / TIMER_TOTAL);
   bar.style.strokeDashoffset = offset;
   num.textContent = secs;
-
   const danger = secs <= 5;
   bar.classList.toggle('danger', danger);
   num.classList.toggle('danger', danger);
@@ -856,10 +991,9 @@ function stopTimer() {
   resetTimerUI();
 }
 
-/* ══ FALLO ══ */
+/* ══ FALLO / FLASH ══ */
 function doFail() { flash('x'); }
 
-/* ══ FLASH ══ */
 function flash(type) {
   const bg = document.createElement('div');
   bg.className = type === 'x' ? 'flash-x' : 'flash-ok';
@@ -884,8 +1018,7 @@ function nextQ() {
 function prevQ() { if (cq <= 0) return; cq--; loadQ(); }
 
 function goBack() {
-  window._pqs = null;
-  cq = 0;
+  window._pqs = null; cq = 0;
   document.getElementById('oEnd').classList.remove('show');
   document.getElementById('sGame').style.display   = 'none';
   document.getElementById('sEditor').style.display = 'block';
