@@ -605,7 +605,10 @@ html, body {
 <!-- ══ EDITOR ══ -->
 <div id="sEditor">
   <div class="editor-logo">
-    <div class="big">100 Mexicanos Dijeron</div>
+    <div id="editorLogoWrap" style="display:none; margin-bottom:18px;">
+      <img id="editorLogoImg" style="max-height:200px; max-width:85%; object-fit:contain; border-radius:18px; filter:drop-shadow(0 4px 24px rgba(0,0,0,.5));" />
+    </div>
+    <div class="big" id="editorTitle">100 Mexicanos Dijeron</div>
     <div class="tribar"><span></span><span></span><span></span></div>
     <div class="sub">Arma tu encuesta 🎙️</div>
   </div>
@@ -776,7 +779,24 @@ function enterEditor() {
   document.getElementById('sLogin').style.display  = 'none';
   document.getElementById('sEditor').style.display = 'block';
   document.getElementById('userLabel').textContent  = currentUser;
+  loadEditorLogo();
   loadUserQuestions();
+}
+
+function loadEditorLogo() {
+  const users = JSON.parse(localStorage.getItem('100mx_users') || '{}');
+  const logo  = users[currentUser]?.teamLogo || '';
+  const wrap  = document.getElementById('editorLogoWrap');
+  const img   = document.getElementById('editorLogoImg');
+  const title = document.getElementById('editorTitle');
+  if (logo) {
+    img.src = logo;
+    wrap.style.display  = 'block';
+    title.style.display = 'none';
+  } else {
+    wrap.style.display  = 'none';
+    title.style.display = 'block';
+  }
 }
 
 /* ══ GUARDAR / CARGAR ══ */
